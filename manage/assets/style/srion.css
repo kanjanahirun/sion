@@ -1,0 +1,89 @@
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    padding: 0px;
+    margin: 0px;
+
+}
+#bg{
+    background: #FCFCFC;
+}
+
+#nav{
+    background-image: url("../image/Hair.jpg");
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-color: black;
+}
+
+article{
+
+}
+#container{
+    min-width: 1334px;
+    width: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+#right{
+    float: right;
+}
+
+.login{
+    background-image: url(../image/background2.jpg) ; 
+    no-repeat: center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.color{
+    color: #fff;
+}
+
+.padded{
+    padding: 20px 194px 0px 290px;
+}
+.point{
+    cursor: pointer;
+}
+
+.padform{
+    padding: 25px 30px 226px 30px;
+}
+
+.idropdown{
+    height: 35px;
+    padding-left: 5px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #D4D0D0;
+}
+.point {
+    cursor: pointer;
+}
+.container-mg{
+    width: 1308px;
+}
+
+.submenu{
+    margin-left: 7px;
+    border-left: 4px solid #3278b3;
+}
+.gray{
+    background-color: #e8e8e8;
+}
+.mygrid-wrapper-div {
+
+    overflow: auto;
+    height: 25%;
+    /*width: 200%;*/
+}
+.alert {
+    opacity:0.5
+}
+.jfk-alert,.jfk-confirm{width:512px}

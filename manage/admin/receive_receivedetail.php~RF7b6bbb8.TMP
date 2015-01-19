@@ -1,0 +1,531 @@
+<?php
+
+session_start(); 
+include("../connect/connect.php");
+
+if (empty($_SESSION['Username'])) {
+    if (empty($_SESSION['Username']) || empty($_SESSION['status']) || empty($_SESSION['name'])) {
+        echo alert('กรุณาเข้าสู่ระบบ Admin ก่อน');
+        echo location("../login.php");
+    }
+}
+
+	//echo $nextNum;
+
+$button = $_POST['Button'];
+$Flag = true;
+// if($button == 'รับสินค้า')
+if (isset($_POST['submit']))
+{
+
+	$ID_Order = $_POST['ID_Order'];
+	$ID_Receive = $_POST['ID_Receive'];
+	$Date_Order = tranformDate($_POST["Date_Order"]);
+	$ID_Emp = $_POST['ID_Emp'];
+	$ID_Company = $_POST['ID_Company'];
+	$ID_Orderdetail = $_POST['ID_Orderdetail'];
+	$ID_Product = $_POST['ID_Product'];
+	$Amount_Product = $_POST['Amount_Product'];
+	$Amount_Receive = $_POST['Number_Product'];
+	$Amount_NonRe = $_POST['No_Receive'];
+	$Product_Remand = 0; //เดี๋ยวกลับมาแก้ให้นะจ๊ะเด็กดี
+	$Amount_balance = $_POST['Total_Price'];
+
+
+	// echo '<pre>';
+	// print_r($Amount_Product);
+	// print_r($Number_Product);
+	// print_r($No_Receive);
+	// print_r($ID_Orderdetail);
+	// print_r($ID_Product);
+
+	//if (!empty($ID_Order)&&!empty($ID_Receive)&&!empty($Date_Order)&&!empty($ID_Emp)&&!empty($ID_Company)&&!empty($ID_Orderdetail)&&!empty($ID_Product)&&!empty($Amount_Product)&&!empty($Number_Product)&&!empty($No_Receive)) {
+
+	$sqlReceive = "INSERT INTO `receive` ( `ID_Receive` , `Date_Receive` , `ID_Emp` , `ID_Company` , `ID_Order` ) VALUES ( '".$ID_Receive."', '".$Date_Order."', '".$ID_Emp."', '".$ID_Company."', '".$ID_Order."' )";
+
+	// echo $sqlReceive."<br>";
+	$result = mysql_query($sqlReceive);
+	if ($result!=0) {
+		$success = 0;
+		for ($i=0; $i < count($ID_Orderdetail); $i++) { 
+			$sqlReceiveDetail = "INSERT INTO `receive_detail` ( `ID_Receivedetail` , `ID_Receive` , `ID_Product` /*, `Amount_Product`*/ ,`Amount_Receive`, `Amount_NonRe`,`ID_Count`,`Cost_Price`,`Amount_balance`, `Product_Remand` ) VALUES ( '".$ID_Orderdetail[$i]."', '".$ID_Receive."', '".$ID_Product[$i]."'/*, '".$Amount_Product[$i]."'*/,'".$Amount_Receive[$i]."','".$Amount_NonRe[$i]."','".$ID_Count[$i]."','".$Cost_Price[$i]."','".$Amount_balance[$i]."', '".$Product_Remand."' );";
+			// echo $sqlReceiveDetail."<br>";
+			$RS = mysql_query($sqlReceiveDetail); 
+			if ($RS !=0) {
+				$success++;
+			}
+		}
+		if ($success == count($ID_Orderdetail)) {
+			echo "<script type='text/javascript'>alert('รับสินค้าเรียบร้อย')</script>";
+		}else{
+			echo "<script type='text/javascript'>alert('มีข้อผิดพลาดในการรับสินค้า')</script>";
+		}
+	}
+
+}
+
+?>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+	<meta charset="UTF-8">
+	<title> ร้านศรีอ้น แฮร์ & สปาร์ </title>
+
+	<?php include("../fragments/libmanage.php");?>
+	<style type="text/css">
+		td,th{
+			padding: 10px;
+		}
+	</style>
+</head>
+<body id="bg">
+	<nav>
+		<?php include("../fragments/header.php");?>
+	</nav>
+	<article>
+		<div id="container">
+			<div class="row">
+				<form action="" method="post">
+					<div class="col-md-2">
+						<?php include("../fragments/sidebar.php"); ?>
+					</div>
+					<div class="col-md-10">
+						<div>
+							<ul class="nav nav-tabs" role="tablist">
+								<li Class = "active"><a href="./base.php">จัดการข้อมูลการรับสินค้า</a></li>
+								<li role="presentation" class="dropdown" style="float: right;margin-right: -2px;">
+									<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="min-width: 160px;">
+										<?php echo isset($_SESSION['name'])?$_SESSION['name']:"";?> <span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li><a href="../logout.php">ออกจากระบบ</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<?php
+						$lastsql="SELECT ID_receivedetail From receive_detail order by ID_receivedetail DESC LIMIT 1";
+						$result=mysql_query($lastsql);
+						$OldId =mysql_fetch_array($result);
+				    		//P 099
+						$NewId = generateID2($OldId['ID_receivedetail'],2);
+	//generateID(ไอดีตัวสุดท้าย,จำนวนตัวอักษรที่อยู่ในไอดีนั้นๆ เช่น P099 ก็คือ มีแค่ 1 ตัว );
+
+						$lastsql="SELECT ID_Receive From receive order by ID_Receive DESC LIMIT 1";
+						$result=mysql_query($lastsql);
+						$OldId =mysql_fetch_array($result);
+
+	//P 099
+						$OrId = generateIDbyFix($OldId['ID_Receive'],2,"RD");
+						?>
+						<input type="hidden" id='NewReceiveId' value="<?php echo $OrId;?>">
+						<div class="row">
+							<div class="col-lg-7">
+								<div class="table-responsive">
+									<table>
+										<tr>
+											<td>
+												<label>รหัสการสั่งสินค้า</label>
+											</td>
+											<td>
+
+												<select name="ID_Order" id="ID_Order" class="idropdown" placeholder="เลือกรหัสการสั่งสินค้า" required="" >
+													<option value="" style="background: #C0F9BD">เลือกรหัสการสั่งสินค้า</option>
+													<?php
+													$strSQL = "SELECT * FROM orders ORDER BY ID_Order ASC";
+													$objQuery = mysql_query($strSQL);
+													while($objResult = mysql_fetch_array($objQuery))
+													{
+														?>
+														<option value="<?=$objResult["ID_Order"];?>" style="background: #C0F9BD">
+															<?=$objResult["ID_Order"];?>
+														</option>
+														<?php
+													} 
+													?>
+												</select>
+											</td>
+										</tr>
+									</table>
+									<table>
+										<tr>
+											<br>
+											<td style="border: none;width: 25%;">
+												<label>รหัสการรับสินค้า : </label>
+											</td>
+											<td style="border: none;">
+												<span>&nbsp;<b id='receiveId'><?php echo $OrId;?></b></span>
+												<input name="ID_Receive" id="ID_Receive" type="hidden" placeholder="รหัสการรับสินค้า" value="<?php echo $OrId;?>">
+											</td>
+											<td style="border: none;width: 19%;">
+												<label>วันที่รับสินค้า</label>
+											</td>
+											<td style="border: none;">
+												<input class="form-control point" name="Date_Order" id="datetimepicker1" type="text" placeholder="คลิกเพื่อเลือกวันที่" style="width: 100%;" required="">
+												<script type="text/javascript">
+													jQuery('#datetimepicker1').datetimepicker({
+														lang:'th',
+														i18n:{
+															th:{
+																months:[
+																'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน',
+																'พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม',
+																'กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม',
+																],
+																dayOfWeek:[
+																"So.", "Mo", "Di", "Mi",
+																"Do", "Fr", "Sa.",
+																]
+															}
+														},
+														timepicker:false,
+														format:'d/m/Y'
+													});
+													$( document ).ready(function() {
+														var date = new Date();
+
+														if(date.getDate()<10)
+														{
+															date = (date.getDate()+"/"+(parseInt(date.getMonth())+1)+"/"+date.getFullYear());
+														}
+														else 
+														{
+															date = (date.getDate()+"/"+(parseInt(date.getMonth())+1)+"/"+date.getFullYear());
+														}
+														jQuery('#datetimepicker1').val(date);
+
+													});
+												</script>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: none;width: 19%;">
+												<label>ชื่อพนักงาน</label>
+											</td>
+											<td style="border: none;">
+												<select name="ID_Emp" style="width: 100%;" id="ID_Emp" class="idropdown" placeholder="รหัสพนักงาน" required="">
+													<option value="" style="background: #C0F9BD">ชื่อพนักงาน</option>
+													<?php
+													$strSQL = "SELECT * FROM employees ORDER BY ID_Emp ASC";
+													$objQuery = mysql_query($strSQL);
+													while($objResult = mysql_fetch_array($objQuery))
+													{
+														?>
+														<option value="<?=$objResult["ID_Emp"];?>" style="background: #C0F9BD">
+															<?=$objResult["FName_Emp"];?>
+														</option>
+														<?php
+													}
+													?>
+												</select>
+											</td>
+											<td style="border: none;">
+												<label>ชื่อบริษัท</label>
+											</td>
+											<td style="border: none;">
+												<select name="ID_Company"  style="width: 100%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
+													<option value="" style="background: #C0F9BD">ชื่อบริษัท</option>
+													<?php
+													$strSQL = "SELECT * FROM company ORDER BY ID_Company ASC";
+													$objQuery = mysql_query($strSQL);
+													while($objResult = mysql_fetch_array($objQuery))
+													{
+														?>
+														<option value="<?=$objResult["ID_Company"];?>" style="background: #C0F9BD">
+															<?=$objResult["Name_Company"];?>
+														</option>
+														<?php
+													}
+													?>
+												</select>
+											</td>
+										</tr> 
+									</table>
+								</div>
+
+							</div>
+
+
+							<div class="col-md-5">
+								<?
+								$strSQL = "SELECT * FROM employees e, receive r, company c WHERE e.ID_Emp = r.ID_Emp AND r.ID_Company = c.ID_Company ORDER BY ID_Receive ASC";
+								$objQuery = mysql_query($strSQL);
+								?>
+
+								<div class="bs-example">
+									<div class="panel panel-default">
+										<!-- Default panel contents -->
+										<div class="panel-heading"><h4>แสดงข้อมูลการรับสินค้า</h4></div>
+										<!-- Table -->
+										<div class="mygrid-wrapper-div">
+											<table class="table">
+												<thead>
+													<tr>
+														<th>รหัสการรับสินค้า</th>
+														<th>ชื่อพนักงาน</th>
+														<th>ชื่อบริษัท</th>
+														<th>วันที่รับสินค้า</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody>
+													<?
+											//$strSQL = "";
+
+													$strSQL = "SELECT r.ID_Receive, r.Date_Receive, c.Name_Company, e.FName_Emp, e.LName_Emp FROM receive r INNER JOIN company c ON c.ID_Company = r.ID_Company INNER JOIN employees e ON e.ID_Emp = r.ID_Emp ORDER BY r.ID_Receive ASC";
+													$objQuery = mysql_query($strSQL);
+													?>
+													<?php while($row_receive = mysql_fetch_array($objQuery)) { ?>
+													<tr>
+														<td>
+															<a id="<?=$row_receive['ID_Receive']?>" class="point">
+																<?php echo $row_receive['ID_Receive']; ?>
+															</a>
+														</td>
+														<td><?php echo $row_receive['FName_Emp']; ?></td>
+														<td><?php echo $row_receive['Name_Company']; ?></td>
+														<td><?php echo $row_receive['Date_Receive']; ?></td>
+													</tr>
+													<script type="text/javascript">
+														$("#<?=$row_receive['ID_Receive']?>").click(function(){
+															$('#add').hide();
+															$('#receiveId').text("<?=$row_receive['ID_Receive']?>");
+															ID_Receive.value = "<?=$row_receive['ID_Receive']?>";
+															document.getElementById("ID_Emp")[0].text  ="<?=$row_receive['FName_Emp']?>";
+															document.getElementById("ID_Emp")[0].value ="<?=$row_receive['ID_Emp']?>";
+															document.getElementById("ID_Company")[0].text ="<?=$row_receive['Name_Company']?>";
+															document.getElementById("ID_Company")[0].value ="<?=$row_receive['ID_Company']?>";
+															datetimepicker1.value = "<?=$row_receive['Date_Receive']?>";
+														});
+													</script>
+
+													<?php } ?>
+												</tbody>
+											</table>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div align="center"><b>______________________________________________________ รายละเอียดการรับสินค้า ______________________________________________________<b></div>
+						<br>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<table>
+									<tr>
+										<th>รหัสรายละเอียด</th>
+										<th>ชื่อสินค้า</th>
+										<th>จำนวนที่สั่ง</th>
+										<th>จำนวนที่รับ</th>
+										<th>จำนวนค้างรับ</th>
+										<th>หน่วยนับ</th>
+										<th>หน่วยละ/บาท</th>
+										<th>ยอดชำระ/บาท</th>
+									</tr>
+
+									<tbody id="tbodydetail">
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<center><br>
+
+									<div class="col-md-6" align="right">
+										<button id="add" type="submit" name="submit" class="btn btn-primary">
+											<i class="glyphicon glyphicon-shopping-cart"></i> รับสินค้า
+										</button>
+									</div>
+									<div class="col-md-6" align="left">
+										<button id="cancle" type="reset" class="btn btn-default">
+											<i class="glyphicon glyphicon-remove-circle"></i> ยกเลิก
+										</button>
+									</div>
+									<script type="text/javascript">
+										$('#cancle').click(function(){
+											$('#add').show();
+										});
+									</script>
+								</center>
+							</div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-md-12">
+								<?php
+								$strSQL = "SELECT o.ID_Order, o.Date_Order, o.ID_Emp, o.ID_Company, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.ID_Prefix, e.FName_Emp, e.LName_Emp, ct.ID_Count, ct.Name_Count FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp INNER JOIN count ct ON ct.ID_Count = p.ID_Count ORDER BY ID_Orderdetail ASC";
+								$objQuery = mysql_query($strSQL);
+								//$objResult = mysql_fetch_array($objQuery);
+
+								?>
+								<br>
+								<div class="bs-example">
+									<div class="panel panel-default">
+										<!-- Default panel contents -->
+										<div class="panel-heading"><h4>แสดงรายละเอียดการรับสินค้า</h4></div>
+										<!-- Table -->
+										<div class="mygrid-wrapper-div">
+											<?php 
+											//$sql = 'SELECT * FROM  receive_detail rd, product p, count c WHERE rd.ID_Product=p.ID_Product AND p.ID_Count = c.ID_Count order by ID_Receivedetail';
+											$query = "SELECT r.ID_Receive, r.Date_Receive, r.ID_Emp, r.ID_Company, rd.ID_Receivedetail, rd.Amount_Receive, rd.Amount_NonRe, rd.Cost_Price, rd.Amount_balance, rd.ID_Product, rd.Product_Remand, p.Amount_Product, p.Sale_Price, p.Point_Purchase, p.Product_Name, c.ID_Count, c.Name_Count, c.Amount_Unit, o.ID_Order, o.Date_Order, od.ID_Orderdetail, od.Amount_Product AS Amount_Product_Order, od.Total_Price FROM receive r INNER JOIN receive_detail rd ON r.ID_Receive = rd.ID_Receive INNER JOIN product p ON rd.ID_Product = p.ID_Product INNER JOIN count c ON p.ID_Count = c.ID_Count INNER JOIN orders o ON r.ID_Order = o.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order ORDER BY rd.ID_Receivedetail"; 
+											$result = mysql_query($query);
+
+
+
+
+
+
+
+											?>
+											<table class="table">
+												<thead>
+													<tr>
+														<th>รหัสรายละเอียด</th>
+														<th>ชื่อสินค้า</th>
+														<th>จำนวนที่สั่ง</th>
+														<th>จำนวนที่รับ</th>
+														<th>จำนวนค้างรับ</th>
+														<th>หน่วยนับ</th>
+														<th>หน่วยละ/บาท</th>
+														<th>ยอดชำระ/บาท</th>
+
+													</tr>
+												</thead>
+												<tbody>
+													<?php 
+
+														while ($row=mysql_fetch_array($result)) {
+														?>
+													 <tr>
+													 	<td><?php echo $row['ID_Receivedetail']; ?></td>
+													 	<td><?php echo $row['Product_Name']; ?></td>
+													 	<td><?php echo $row['Amount_Product']; ?></td>
+													 	<td><?php echo $row['Amount_Receive']; ?></td>
+													 	<td><?php echo $row['Amount_NonRe']; ?></td>
+													 	<td><?php echo $row['Name_Count']; ?></td>
+													 	<td><?php echo $row['Cost_Price']; ?></td>
+													 	<td><?php echo $row['Amount_balance']; ?></td>
+													 </tr>
+													 <script type="text/javascript">
+														$("#<?=$row_receivedetail['ID_Receivedetail']?>").click(function(){
+															$('#add').hide();
+															$('#receiveId').text("<?=$row_receivedetail['ID_Receivedetail']?>");
+															ID_Receivedetail.value = "<?=$row_receivedetail['ID_Receivedetail']?>";
+															
+															document.getElementById("ID_Product")[0].text  ="<?=$row_receivedetail['Product_Name']?>";
+															
+															document.getElementById("Amount_Product")[0].value ="<?=$row_receivedetail['Amount_Product']?>";
+															
+															document.getElementById("Amount_Receive")[0].text ="<?=$row_receivedetail['Amount_Receive']?>";
+															
+															document.getElementById("Amount_NonRe")[0].value ="<?=$row_receivedetail['Amount_NonRe']?>";
+
+															document.getElementById("ID_Count")[0].text ="<?=$row_receivedetail['Name_Count']?>";
+
+															document.getElementById("Cost_Price")[0].value ="<?=$row_receivedetail['Cost_Price']?>";
+
+															document.getElementById("Amount_balance")[0].value ="<?=$row_receivedetail['Amount_balance']?>";
+
+															
+														});
+													</script>
+													 <?php 
+													 } 
+													 ?>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+	$('#ID_Order').change(function(){
+		var receiveId = $('#ID_Order').val();
+		var json = {
+			ID_Order : receiveId
+		};
+
+		$.post("./receive.controller.php",json, function(data,status){
+			var orders = JSON.parse(data);
+			//console.log(orders);
+			if(orders)
+				$('#ID_Company option[value='+(orders.ID_Company)+']').attr('selected','selected');
+		});
+		
+
+		var notfound = '<tr><td colspan="8"><center><h2 style="color: rgb(237, 45, 45);">ไม่พบรายการที่ท่านเลือก!</h2></center></td></tr>';
+
+		// refer http://jsfiddle.net/bqX7Q/
+
+		$.post("getorder.php", json, function(data,status){
+			//alert("Data: " + data + "\nStatus: " + status);
+			// console.log(data);
+			var orderdetail = JSON.parse(data);
+
+			console.log(orderdetail.length,orderdetail);
+
+
+			if(orderdetail.length == 0){
+				document.getElementById('tbodydetail').innerHTML = "";
+				$('#tbodydetail').append(notfound);
+			}
+
+			var Orderdetail,Product,AmountProduct,NumberProduct,NoReceive,Count,TotalPrice,CostPrice,templete,script;
+			for(var i = 0; i < orderdetail.length; i++){
+				// remove tag
+				if(i == 0) document.getElementById('tbodydetail').innerHTML = "";
+				Orderdetail = '<input type="text" name="ID_Orderdetail[]" value="'+orderdetail[i].ID_Orderdetail+'" class="form-control" readonly>';
+				Product = '<input type="hidden" id="ID_Product" name="ID_Product[]" value="'+orderdetail[i].ID_Product+'"><input name="Product_Name[]" id="Product_Name" value="'+orderdetail[i].Product_Name+'" maxlength="5" class="form-control" readonly>';
+				AmountProduct = '<input type="text" name="Amount_Product[]" id="Amount_Product'+i+'" placeholder="จำนวนที่สั่ง" maxlength="10" class="form-control" required="" value="'+orderdetail[i].Amount_Product+'" readonly>'; 
+				NumberProduct = '<input type="text" name="Number_Product[]" id="Number_Product'+i+'" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="">';
+				NoReceive = '<input type="text" name="No_Receive[]" id="No_Receive'+i+'" placeholder="จำนวนค้างรับ" maxlength="10" class="form-control" required="" value="0" readonly>';
+				Count = '<input type="hidden" name="ID_Count[]" id="ID_Count" value ="'+orderdetail[i].ID_Count+'"><input name="Name_Count[]" id="Name_Count" required="" placeholder="รหัสสินค้า" maxlength="4" value="'+orderdetail[i].Name_Count+'" class="form-control" required="" readonly>';
+				CostPrice = '<input type="text" name="Cost_Price[]" id="Cost_Price'+i+'" required="" placeholder="ราคาทุน" maxlength="10" class="form-control" required="" value="'+orderdetail[i].Cost_Price+'" readonly>';
+				TotalPrice = '<input type="text" name="Total_Price[]" id="Total_Price'+i+'" placeholder="ราคารวม" maxlength="20" class="form-control" required="" value="0" readonly>';
+				
+
+				templete = '<tr><td>'+Orderdetail+'</td><td>'+Product+'</td><td>'+AmountProduct+'</td><td>'+NumberProduct+'</td><td>'+NoReceive+'</td><td>'+Count+'</td><td>'+CostPrice+'</td><td>'+TotalPrice+'</td></tr>';
+
+				script = '<script>$("#Number_Product'+i+'").blur(function() {var number = parseInt($("#Number_Product'+i+'").val());var amount = parseInt('+orderdetail[i].Amount_Product+');if(number!=""&&number!=undefined&&amount>=number){$("#Total_Price'+i+'").val(number*parseFloat('+orderdetail[i].Cost_Price+'));$("#No_Receive'+i+'").val(amount-number);$("#Total_Price'+i+'").number(true,2);}else if(amount<number){alert("กรุณากรอกให้น้อยกว่าหรือเท่ากับจำนวนที่สั่ง");$("#Number_Product'+i+'").val("")} else {$("#Total_Price'+i+'").val(0);$("#No_Receive'+i+'").val(0);}});<\/script>';
+
+
+				// test append
+				$('#tbodydetail').append(templete+script);
+
+			}
+
+
+		});
+});
+</script>
+</article>
+<footer>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#receive').addClass('active');
+		});
+	</script>
+	<?php include("../fragments/footer.php");?>
+</footer>
+</body>
+</html>

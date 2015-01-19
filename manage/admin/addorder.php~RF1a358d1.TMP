@@ -1,0 +1,281 @@
+<?php
+
+session_start();
+if($_SESSION['Username'] == "" or $_SESSION['ID_Status']<>"s001")
+{
+	echo "<script type='text/javascript'>alert('กรุณาเข้าสู่ระบบ Admin ก่อน')</script>";
+	exit();
+}
+
+include("../connect/connect.php");
+
+	//echo $nextNum;
+
+$button = $_POST['Button'];
+	//$Flag = true;
+if($button == 'เพิ่มข้อมูล')
+{
+
+	$strCount = "SELECT * FROM orders ORDER BY ID_Order DESC LIMIT 1";
+	$objQueryCount = mysql_query($strCount);
+	$Count_prefix = mysql_fetch_array($objQueryCount);
+	$NUMCount=substr($Count_prefix["ID_Order"],-1);
+	$nextNum=$NUMCount+1;
+	$Prefix_num=substr($Count_prefix["ID_Order"],0,3);
+
+	$strEmp_ID = "".($Prefix_num."".$nextNum);
+			//echo "<script type='text/javascript'>alert('กรุณาเข้าสู่ระบบ Admin ก่อน')</script>";
+
+	$date = tranformDate($_POST["Date_Order"]);
+
+			//$sql ="INSERT INTO prefix (ID_Prefix, Name_Prefix) VALUES ('$ID_Prefix', '$Name_Prefix')";
+	$sql ="INSERT INTO orders VALUES ('".$_POST["ID_Order"]."', '".$date."', '".$_POST["ID_Emp"]."', '".$_POST["ID_Company"]."')";
+
+			//บัคที่เพิ่ม ID ซ้ำกันแล้ว ไม่มี Error*********************************************************************
+	mysql_query($sql);
+	if($Flag)
+	{
+		echo "<script type='text/javascript'>alert('เพิ่มข้อมูลสำเร็จ')</script>";
+	}
+			// else
+			// {
+			// 	echo "<script type='text/javascript'>alert('เพิ่มข้อมูลผิดพลาด')</script>";
+			// }
+}
+elseif($button == 'แก้ไขข้อมูล')
+{
+			//$sql = "UPDATE Employees SET ID_Prefix, FName_Emp, LName_Emp, Tel_Emp, Salary, ID_TypeEmp, personal_ID = '".$_POST["ID_Prefix"]."', '".$_POST["FName_Emp"]."', '".$_POST["LName_Emp"]."', '".$_POST["Tel_Emp"]."', '".$_POST["Salary"]."', '".$_POST["ID_TypeEmp"]."', '".$_POST["personal_ID"]."'";
+	$date = tranformDate($_POST["Date_Order"]);
+	$sql = "UPDATE orders SET Date_Order = '".$date."',ID_Emp = '".$_POST["ID_Emp"]."',ID_Company = '".$_POST["ID_Company"]."' WHERE ID_Order = '".$_POST["ID_Order"]."'";
+	
+	mysql_query($sql);
+
+}
+elseif($button == 'ลบข้อมูล'){
+	$sql ="DELETE FROM orders WHERE ID_Order = '".$_POST["ID_Order"]."'";
+	mysql_query($sql);
+}
+?>
+<!DOCTYP html>
+<html>
+<head>
+	<title> ร้านศรีอ้น แฮร์ & สปาร์ </title>
+
+	<?php include("../fragments/libmanage.php");?>
+
+</head>
+
+<body id="bg">
+	<nav>
+		<?php include("../fragments/header.php");?>
+	</nav>
+	<article>
+		<div id="container">
+			<div class="row">
+				<div class="col-md-2">
+					<?php include("../fragments/sidebar.php"); ?>
+				</div>
+				<div class="col-md-10">
+					<div class="col-md-12">
+						<div>
+							<ul class="nav nav-tabs" role="tablist">
+								<li class="active">
+									<a>
+										จัดการข้อมูลการสั่งสินค้า 
+									</a>
+								</div>
+
+								<div class="orderdetail.php">
+									<div class="row">
+										<div class="padform">
+											<?php
+											$lastsql="SELECT ID_Order From orders order by ID_Order DESC LIMIT 1";
+											$result=mysql_query($lastsql);
+											$OldId =mysql_fetch_array($result);
+											
+											$NewId = generateID($OldId['ID_Order'],2);
+				    		//$NewId = generateIDbyFix($OldId['ID_Order'],2,'OR');
+
+				    		//generateID(ไอดีตัวสุดท้าย,จำนวนตัวอักษรที่อยู่ในไอดีนั้นๆ เช่น P099 ก็คือ มีแค่ 1 ตัว );
+
+											?>
+											<div class="col-lg-12">
+												<div class="row">
+													<?php 
+													if (isset($_POST['numrow'])) {
+					  		# code...
+													}
+													?>
+													
+													<table class="table">
+														<tr>
+															<td style="border: none;">
+																<label>รหัสการสั่งสินค้า : </label>
+															</td>
+															<td style="border: none;">
+																<span>&nbsp;<b><?php echo $NewId;?></b></span>
+																<input name="ID_Order" id="ID_Order" type="hidden" placeholder="รหัสการสั่งสินค้า" value="<?php echo $NewId;?>">
+															</td>
+															<td style="border: none;">
+																<label>วันที่สั่งสินค้า</label>
+															</td>
+															<td style="border: none;">
+																<input class="form-control point" name="Date_Order" id="datetimepicker1" type="text" placeholder="คลิกเพื่อเลือกวันที่" style="width: 50%;">
+																<script type="text/javascript">
+																	jQuery('#datetimepicker1').datetimepicker({
+																		lang:'th',
+																		i18n:{
+																			th:{
+																				months:[
+																				'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน',
+																				'พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม',
+																				'กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม',
+																				],
+																				dayOfWeek:[
+																				"So.", "Mo", "Di", "Mi",
+																				"Do", "Fr", "Sa.",
+																				]
+																			}
+																		},
+																		timepicker:false,
+																		format:'d/m/Y'
+																	});
+																</script>
+															</td>
+														</tr>
+														<tr>
+															<td style="border: none;">
+																<label>ชื่อพนักงาน</label>
+															</td>
+															<td style="border: none;">
+																<select name="ID_Emp" id="ID_Emp" class="idropdown" placeholder="รหัสพนักงาน">
+																	<option value="" style="background: #C0F9BD">ชื่อพนักงาน</option>
+																	<?php
+																	$strSQL = "SELECT * FROM employees ORDER BY ID_Emp ASC";
+																	$objQuery = mysql_query($strSQL);
+																	while($objResult = mysql_fetch_array($objQuery))
+																	{
+																		?>
+																		<option value="<?=$objResult["ID_Emp"];?>" style="background: #C0F9BD">
+																			<?=$objResult["FName_Emp"];?>
+																		</option>
+																		<?php
+																	}
+																	?>
+																</select>
+															</td>
+															<td style="border: none;">
+																<label>ชื่อบริษัท</label>
+															</td>
+															<td style="border: none;">
+																<select name="ID_Company" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท">
+																	<option value="" style="background: #C0F9BD">ชื่อบริษัท</option>
+																	<?php
+																	$strSQL = "SELECT * FROM company ORDER BY ID_Company ASC";
+																	$objQuery = mysql_query($strSQL);
+																	while($objResult = mysql_fetch_array($objQuery))
+																	{
+																		?>
+																		<option value="<?=$objResult["ID_Company"];?>" style="background: #C0F9BD">
+																			<?=$objResult["Name_Company"];?>
+																		</option>
+																		<?php
+																	}
+																	?>
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<td colspan="4"style="border: none;">
+																<form method="post"action="">
+																	<table>
+																		<tr>
+																			<td style="border: none;padding: 8px;">
+																				<label>จำนวนรายการที่ต้องการสั่งซื้อ</label>
+																			</td>
+																			<td style="border: none;padding: 8px;">
+																				<input type="number" value=""name="numrow"class="form-control point">
+																			</td>
+																			<td style="border: none;padding: 8px;">
+																				<input id="add" type="submit" class="btn btn-primary" name="Button" value="ตกลง">
+																			</td>
+																		</tr>
+																	</table>
+																</form>
+															</td>
+														</tr>
+													</table>
+													
+												</div>	
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<center STYLE="margin-top: -6%; margin-bottom: 2%;">
+													<br>
+													<input id="add" type="submit" class="btn btn-primary" name="Button" value="เพิ่มข้อมูล">
+													<input id="update"type="submit" class="btn btn-warning" name="Button" value="แก้ไขข้อมูล">
+													<input id="delete"type="submit" class="btn btn-danger" name="Button" value="ลบข้อมูล">
+													<input id="cancle" type="reset" class="btn btn-default" name="Button" value="ยกเลิก">
+													<script type="text/javascript">
+														$('#cancle').click(function(){
+															$('#add').show();
+														});
+													</script>
+												</center>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="col-md-12">
+
+													<?
+													$strSQL = "SELECT * FROM employees e, orders o ,company c WHERE e.ID_Emp = o.ID_Emp AND o.ID_Company = c.ID_Company ORDER BY ID_Emp ASC";
+													$objQuery = mysql_query($strSQL);
+													?>
+													<div class="table-responsive">
+														<table class="table">
+															<thead>
+																<tr>
+																	<th>#</th>
+																	<th>รหัสรายละเอียดการสั่งซื้อ</th>
+																	<th>ชื่อสินค้า</th>
+																	<th>จำนวน</th>
+																	<th>ราคารวม</th>
+																	<th></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>1</td>
+																	<td>
+																		<input type="hidden" name="" id="" value="">
+																	</td>
+																	<td>Table cell</td>
+																	<td>Table cell</td>
+																	<td>Table cell</td>
+																	<td>Table cell</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>
+						<footer>
+							<script type="text/javascript">
+								$(document).ready(function(){
+									$('#order').addClass('active');
+									$('#sub1').show();
+									$('#orderlist').css({background: "#e8e8e8"});
+									$('#orderdetail').css({background: "transparent"});
+								});
+							</script>
+							<?php include("../fragments/footer.php");?>
+						</footer>
+					</body>
+					</html>
