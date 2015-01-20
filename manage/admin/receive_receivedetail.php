@@ -243,7 +243,8 @@ if (empty($_SESSION['Username'])) {
                                                     <label>ชื่อบริษัท</label>
                                                 </td>
                                                 <td style="border: none;">
-                                                    <select name="ID_Company"  style="width: 100%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
+                                                    <input class="form-control point" name="ID_Company" ID="ID_Company" type="text" placeholder="ชื่อบริษัทคู่ค้า" value="<?= $_POST['orders'] ?>" readonly="" style="width: 60%;"><input type="hidden" name="ID_Company" id="ID_Company" value="<?= $orderDetail["ID_Company"]; ?>">
+                                                    <!-- <select name="ID_Company"  style="width: 100%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
                                                         <option value="" style="background: #C0F9BD">ชื่อบริษัท</option>
                                                             <?php
                                                             $sql = "SELECT * FROM company ORDER BY ID_Company ASC";
@@ -256,7 +257,7 @@ if (empty($_SESSION['Username'])) {
                                                                 <?php
                                                             }
                                                             ?>
-                                                    </select>
+                                                    </select> -->
                                                 </td>
                                             </tr> 
                                         </table>

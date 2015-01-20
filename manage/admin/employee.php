@@ -126,6 +126,11 @@ if (!empty($_POST['Button'])) {
                                 </li>
                             </ul>
                         </div>
+                        <tr>
+                                                                <td style="border: none;width: 15%;">
+                                                                    <h3>จัดการข้อมูลพนักงาน</h3>
+                                                                </td>
+                                                            </tr>
                         <?php
                         $lastsql = "SELECT ID_Emp From employees order by ID_Emp DESC LIMIT 1";
                         $result = mysql_query($lastsql);

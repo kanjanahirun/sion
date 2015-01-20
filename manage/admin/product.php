@@ -12,7 +12,6 @@ if (empty($_SESSION['Username'])) {
     if($_SESSION['ID_Status'] == "s002"){
         echo location("./addorder.php");
     }else{
-
 if (!empty($_POST['Button'])) {
     $button = $_POST['Button'];
     //$Flag = true;
@@ -84,9 +83,10 @@ if (!empty($_POST['Button'])) {
                             </ul>
                         </div>
 
+                        
                                             <?php if (!empty($_GET['q'])) { ?>
                                             <?php
-                                            $sql = "SELECT * FROM product p INNER JOIN count c INNER JOIN company cm ON p.ID_Count = c.ID_Count AND p.ID_Company=cm.ID_Company WHERE p.ID_Product LIKE '" . $_GET['q'] . "' OR p.Product_Name LIKE '%" . $_GET['q'] . "%' OR cm.Name_Company LIKE '" . $_GET['q'] . "' ORDER BY p.ID_Product ";
+                                            $sql = "SELECT * FROM product p INNER JOIN count c INNER JOIN company cm ON p.ID_Count = c.ID_Count AND p.ID_Company=cm.ID_Company WHERE p.ID_Product LIKE '" . $_GET['q'] . "' OR p.Product_Name LIKE '%" . $_GET['q'] . "%' OR cm.Name_Company LIKE '" . $_GET['q'] . "' ORDER BY p.ID_Product ASC ";
                                             // $sql = "SELECT * FROM product p, count c, company cm WHERE  p.ID_Count = c.ID_Count AND p.ID_Company=cm.ID_Company p.ID_Product = '" . $_GET['q'] . "'";
                                             // $sql = "SELECT * FROM product WHERE ID_Product = '" . $_GET['q'] . "'";
                                             // $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE o.ID_Order = '" . $_GET['q'] . "' ORDER BY o.ID_Order ASC";
@@ -154,6 +154,7 @@ if (!empty($_POST['Button'])) {
 
                                     }
                                     ?>
+
 
                         <?php
                         $lastsql = "SELECT ID_Product From product order by ID_Product DESC LIMIT 1";
@@ -324,7 +325,6 @@ if (!empty($_POST['Button'])) {
                             </div>
                         </form>
 
-
                         <div class="product">
                                     <div class="row">
                                         <div class="padform">
@@ -340,10 +340,10 @@ if (!empty($_POST['Button'])) {
                                                                     <table>
                                                                         <tr>
                                                                             <td style="border: none;padding: 8px;width: 46%;">
-                                                                                <label>รหัส/ชื่อ/บริษัท</label>
+                                                                                <label>รหัสสินค้า</label>
                                                                             </td>
                                                                             <td style="border: none;padding: 8px;width: 40%;">
-                                                                                <input name="q" id="q" type="text" placeholder="รหัสสินค้า ชื่อสินค้า หรือ บริษัทคู่ค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
+                                                                                <input name="q" id="q" type="text" placeholder="รหัสสินค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
                                                                             </td>
                                                                             <td style="border: none;padding: 8px;">
                                                                                 <input type="submit" class="btn btn-primary" value="ค้นหา">
@@ -463,4 +463,4 @@ if (!empty($_POST['Button'])) {
         </footer>
     </body>
 </html>
-<?php } } ?>
+<?php }} ?>

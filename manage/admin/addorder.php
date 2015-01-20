@@ -10,10 +10,8 @@ if (empty($_SESSION['Username'])) {
     }
 } else {
 
-//echo $nextNum;
     if (!empty($_POST['Button'])) {
         $button = $_POST['Button'];
-        //$Flag = true;
         if ($button == 'เพิ่มข้อมูล') {
 
             $strCount = "SELECT * FROM orders ORDER BY ID_Order DESC LIMIT 1";
@@ -90,20 +88,14 @@ if (empty($_SESSION['Username'])) {
         $ID_Order = $_POST['DELID_Order'];
         $sqla = "DELETE FROM orders WHERE ID_Order = '$ID_Order'";
         $sqlb = "DELETE FROM order_detail WHERE ID_Order = '$ID_Order' ";
-        //mysql_query($sqla);
-        $ra = mysql_query($sqla)or die(mysql_error().":<br />".$sql_select);
-        $rb = mysql_query($sqlb)or die(mysql_error().":<br />".$sql_select);
+        $ra = mysql_query($sqla)or die(mysql_error() . ":<br />" . $sql_select);
+        $rb = mysql_query($sqlb)or die(mysql_error() . ":<br />" . $sql_select);
         if ($ra && $rb) {
-                echo "<script type='text/javascript'>alert('ลบข้อมูลสำเร็จ')</script>";
+            echo "<script type='text/javascript'>alert('ลบข้อมูลสำเร็จ')</script>";
         } else {
-                echo "<script type='text/javascript'>alert('ลบข้อมูลผิดพลาด')</script>";
+            echo "<script type='text/javascript'>alert('ลบข้อมูลผิดพลาด')</script>";
         }
-        // echo $sql;
-        // Coding ..
-        
     }
-    
-    
     ?>
     <!DOCTYP html>
     <html ng-app="sion">
@@ -142,17 +134,15 @@ if (empty($_SESSION['Username'])) {
                                 <div class="orderdetail">
                                     <div class="row">
                                         <div class="padform">
-                                            
+
                                             <?php if (!empty($_GET['q'])) { ?>
                                                 <?php
                                                 $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE o.ID_Order = '" . $_GET['q'] . "' ORDER BY o.ID_Order ASC";
                                                 $result = mysql_query($sql);
-                                                ?>
-                                                <!--<div class="mfp-bg my-mfp-zoom-in mfp-ready"></div>-->
+                                                ?> 
                                                 <div style="top: 342px; position: absolute; height: 1138px;" tabindex="-1" class="mfp-wrap mfp-close-btn-in mfp-auto-cursor my-mfp-zoom-in mfp-ready">
                                                     <div class="mfp-container mfp-inline-holder">
-                                                        <div class="mfp-content">
-                                                            <!--<a class="popup-with-zoom-anim" HREF="#smallResult"> รายละเอียด </a>-->
+                                                        <div class="mfp-content"> 
                                                             <div id="smallResult" class="zoom-anim-dialog mfp-hide dialog open" style="margin-top: 226px;height: auto;"> 
                                                                 <div class="panel panel-default">
                                                                     <div class="panel-heading"><h4>ข้อมูลรายละเอียดการสั่งสินค้า</h4></div>
@@ -163,19 +153,18 @@ if (empty($_SESSION['Username'])) {
                                                                             <th>รหัสรายละเอียดการสั่งสินค้า</th> 
                                                                             <th>ชื่อสินค้า</th>
                                                                             <th><span style="float: right;">จำนวนสินค้า</span></th>
-                                                                            <th><span style="float: right;">ราคารวม(บาท)</span></th>
-                                                                            <!-- <th>สถานะ</th>  -->
+                                                                            <th><span style="float: right;">ราคารวม(บาท)</span></th> 
                                                                             </thead>
                                                                             <tbody>
-                                                                                <?php 
+                                                                                <?php
                                                                                 $total_price = 0;
-                                                                                while ($orderDetail = mysql_fetch_array($result)) { 
-                                                                                    $total_tmp = str_replace(",", "",$orderDetail['Total_Price']);
+                                                                                while ($orderDetail = mysql_fetch_array($result)) {
+                                                                                    $total_tmp = str_replace(",", "", $orderDetail['Total_Price']);
                                                                                     $total_price += $total_tmp;
                                                                                     ?>
                                                                                     <tr> 
                                                                                         <td>
-                                                                                            <?php echo $orderDetail['ID_Order']; ?>
+                                                                                            <?php $getorder = $orderDetail['ID_Order'];  echo $orderDetail['ID_Order']; ?>
                                                                                         </td> 
                                                                                         <td>
                                                                                             <a readonly id="<?php echo $orderDetail['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetail['ID_Orderdetail']; ?></a>
@@ -190,15 +179,16 @@ if (empty($_SESSION['Username'])) {
                                                                                     <?php
                                                                                 }
                                                                                 ?>
-                                                                                    <tr align="right">
-                                                                                        <td colspan="7"> 
-                                                                                            ราคารวม <b><?= number_format($total_price,2) ?></b> บาท
-                                                                                        </td>
-                                                                                    </tr>
+                                                                                <tr align="right">
+                                                                                    <td colspan="7"> 
+                                                                                        ราคารวม <b><?= number_format($total_price, 2) ?></b> บาท
+                                                                                    </td>
+                                                                                </tr>
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
                                                                 </div>
+                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a>
                                                                 <div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
                                                             </div>
 
@@ -235,7 +225,8 @@ if (empty($_SESSION['Username'])) {
                                                         <table class="table">
                                                             <tr>
                                                                 <td style="border: none;width: 15%;">
-                                                                    <h3>เพิ่มข้อมูลการสั่งซื้อสินค้า</h3>
+                                                                    <h3 class="table-add">เพิ่มข้อมูลการสั่งซื้อสินค้า</h3>
+                                                                    <h3 style="display: block;"  class="table-edit">แก้ไขข้อมูลการสั่งซื้อสินค้า</h3>
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -259,9 +250,9 @@ if (empty($_SESSION['Username'])) {
                                                     </form>
                                                     <script>$('#numorders').val("");</script>  
                                                     <form method="post" action="./addorder.php"> 
-                                                        <div ng-if="numrows.length > 0" >
+                                                        <div ng-if="numrows > 0" >
                                                             <div class="table-responsive">
-                                                                <table class="table">
+                                                                <table class="table table-add">
                                                                     <tr>
                                                                         <td style="border: none;width: 15%;">
                                                                             <label>รหัสการสั่งสินค้า : </label>
@@ -316,28 +307,25 @@ if (empty($_SESSION['Username'])) {
                                                                     </tr> 
                                                                 </table>
                                                                 <div class="mygrid-wrapper-div" style="height: auto;">
-                                                                    <table class="table">
+                                                                    <table class="table table-add">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th>#</th>
-                                                                                <!--<th style="width: 20%;">รหัสรายละเอียดการสั่งซื้อ</th>-->
+                                                                                <th>#</th> 
                                                                                 <th style="width: 22%;">ชื่อสินค้า</th>
                                                                                 <th style="width: 5%;">จำนวน</th>
                                                                                 <th style="width: 15%;">หน่วยนับ</th>
                                                                                 <th>ราคาต่อหน่วย (บาท)</th> 
                                                                                 <th>ราคารวม (บาท)</th>
-                                                                                <th colspan="2"></th>
-                                                                                <!-- <th>รายการที่เลือก</th> -->
+                                                                                <th colspan="2"></th> 
                                                                             </tr>
                                                                         </thead>
-                                                                        <tbody>   
-                                                                            <!--<tr ng-repeat="row in []| range:numrows" id="ng{{$index}}">-->
-                                                                            <tr data-ng-repeat="row in numrows">
-                                                                                <td> {{$index + 1}} </td>
-    <!--                                                                            <td> 
-                                                                                    <label>{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}</label>
-                                                                                    <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
-                                                                                </td>-->
+                                                                        <tbody>    
+                                                                            <tr ng-repeat="row in range(0, numrows - 1)" id="ng{{$index}}" ng-if="input[$index] != -1">
+                                                                                <td> 
+                                                                                    <input type="hidden" ng-model="end">
+                                                                                    <input type="hidden" ng-model="index[$index]" ng-init="index[$index] = $index + 1">
+                                                                                    {{index[$index]}}
+                                                                                </td> 
                                                                                 <td>                                            
                                                                                     <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
                                                                                     <select ng-change="selectProduct($index)" ng-model="ID_Product[$index]" name="ID_Product[]" id="ID_Product" class="idropdown" placeholder="ชื่อสินค้า" required="">
@@ -375,42 +363,44 @@ if (empty($_SESSION['Username'])) {
                                                                                     <script>$('.Total_Price').number(true, 2);</script>
                                                                                 </td>  
                                                                                 <td style="width:17%">
-                                                                                    <div ng-if="$index != 0 && $index == (numrows.length - 1)" style="cursor: pointer;  margin-top: 8px;">
-                                                                                        <!--<div ng-if="$index != 0" style="cursor: pointer;  margin-top: 8px;">-->
-                                                                                        <a ng-click="deleteRow($index)" style="color: rgb(211, 39, 39);" title="ลบแถว"><i class="glyphicon glyphicon-remove"></i></a>
+                                                                                    <div ng-if="$index != 0 && $index == (row)" style="cursor: pointer;  margin-top: 8px;"> 
+                                                                                        <a ng-click="deleteRow($index, 1)" style="color: rgb(211, 39, 39);" title="ลบแถว"><i class="glyphicon glyphicon-remove"></i></a>
                                                                                     </div>
-                                                                                </td>
-                                                                                <td> 
-                                                                                    <div ng-if="$index == (numrows.length - 1)" style="cursor: pointer;margin-top: 9px;">
-                                                                                        <a ng-click="numRows(numrows.length, 2)" title="เพิ่มแถว"><i class="glyphicon glyphicon-plus"></i></a>
-                                                                                    </div>
-                                                                                    <!-- ลบรายการ -->
-                                                                                    <!-- <center> <input type="checkbox" class="css_data_item" name="select" value="select"> </center>-->
-                                                                                    <!-- <span ng-click="Del(row.$$hashKey)">x</span> -->
                                                                                 </td> 
-                                                                            </tr>
-    <!--                                                                            <tr align="right">
-                                                                                <td colspan="7"> 
-                                                                                    ราคารวม <span>120.00</span> บาท
-                                                                                </td>
-                                                                                <td> 
-                                                                                    <div style="cursor: pointer;margin-top: 2px;">
-                                                                                        <a ng-click="numRows(numrows.length, 2)" title="เพิ่มแถว"><i class="glyphicon glyphicon-plus"></i></a>
-                                                                                    </div>
-                                                                                     ลบรายการ 
-                                                                                     <center> <input type="checkbox" class="css_data_item" name="select" value="select"> </center>
-                                                                                     <span ng-click="Del(row.$$hashKey)">x</span> 
-                                                                                </td> 
-                                                                            </tr>   -->
+                                                                            </tr> 
                                                                             <tr align="center">
                                                                                 <td colspan="8"> 
+                                                                                    <a ng-click="numRows(numrows, 2)" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>เพิ่มแถว</a>
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr align="right">
+                                                                                <td colspan="8">
                                                                                     <input id="add" type="submit" class="btn btn-primary" name="Button" value="เพิ่มข้อมูล">
-                                                                                    <!-- <input onclick="return checkIdPrefix();" id="delete" type="submit" class="btn btn-danger" name="Button" value="ลบแถว">  -->
                                                                                     <a href="./addorder.php" class="btn btn-default">ยกเลิก</a>  
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
+                                                                    <div id="table-edit">
+
+                                                                    </div>
+    <!--                                                                    <table class="table" >
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>#</th> 
+                                                                                <th style="width: 22%;">ชื่อสินค้า</th>
+                                                                                <th style="width: 5%;">จำนวน</th>
+                                                                                <th style="width: 15%;">หน่วยนับ</th>
+                                                                                <th>ราคาต่อหน่วย (บาท)</th> 
+                                                                                <th>ราคารวม (บาท)</th>
+                                                                                <th colspan="2"></th> 
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>   
+                                                                            
+                                                                        </tbody>
+                                                                    </table>-->
                                                                 </div> 
                                                             </div> 
                                                         </div>
@@ -420,40 +410,35 @@ if (empty($_SESSION['Username'])) {
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <form action="./addorder.php" method="get">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td style="border: none;width: 15%;">
-                                                            <h3>ค้นหาข้อมูลการสั่งสินค้า</h3>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4"style="border: none;">
-                                                            <table>
-                                                                <tr>
-                                                                    <td style="border: none;padding: 8px;width: 46%;">
-                                                                        <label>รหัสการสั่งสินค้า</label>
-                                                                    </td>
-                                                                    <td style="border: none;padding: 8px;width: 40%;">
-                                                                        <input name="q" id="q" type="text" placeholder="รหัสการสั่งสินค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
-                                                                    </td>
-                                                                    <td style="border: none;padding: 8px;">
-                                                                        <input type="submit" class="btn btn-primary" value="ค้นหา">
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-
-                                                                                                                <!-- <input type="text" name="q" value=""> -->
-
-                                            </form>
+                                                <form action="./addorder.php?" method="get">
+                                                    <table class="table">
+                                                        <tr>
+                                                            <td style="border: none;width: 15%;">
+                                                                <h3>ค้นหาข้อมูลการสั่งสินค้า</h3>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4"style="border: none;">
+                                                                <table>
+                                                                    <tr>
+                                                                        <td style="border: none;padding: 8px;width: 46%;">
+                                                                            <label>รหัสการสั่งสินค้า</label>
+                                                                        </td>
+                                                                        <td style="border: none;padding: 8px;width: 40%;">
+                                                                            <input name="q" id="q" type="text" placeholder="รหัสการสั่งสินค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
+                                                                        </td>
+                                                                        <td style="border: none;padding: 8px;">
+                                                                            <input type="submit" class="btn btn-primary" value="ค้นหา">
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </form>
                                                 <div class="bs-example">
-                                                    <div class="panel panel-default">
-                                                        <!-- Default panel contents -->
-                                                        <div class="panel-heading"><h4>ข้อมูลการสั่งสินค้า</h4></div>
-                                                        <!-- Table -->
+                                                    <div class="panel panel-default"> 
+                                                        <div class="panel-heading"><h4>ข้อมูลการสั่งสินค้า</h4></div> 
                                                         <div class="mygrid-wrapper-div" style="height:65%;">
                                                             <table class="table">
                                                                 <thead>
@@ -472,12 +457,12 @@ if (empty($_SESSION['Username'])) {
                                                                     <?php
                                                                     $sql = "SELECT * FROM `orders` ORDER BY ID_Order DESC";
                                                                     $query = mysql_query($sql);
-                                                                    
+
                                                                     // compute pagination  
                                                                     $total_results = 0;
                                                                     $orderx = array();
                                                                     $orderd = array();
-                                                                    
+
                                                                     while ($order = mysql_fetch_assoc($query)) {
                                                                         $ID_Emp = $order['ID_Emp'];
                                                                         $ID_Order = $order['ID_Order'];
@@ -487,79 +472,58 @@ if (empty($_SESSION['Username'])) {
                                                                             $eql = "SELECT o.ID_Order, o.Date_Order, c.ID_Company,c.Name_Company,a.ID_Admin AS ID_Emp, a.Name_Admin AS FName_Emp, a.LName_Admin AS LName_Emp FROM orders o INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN admin a ON a.ID_Admin = o.ID_Emp WHERE a.ID_Admin='$ID_Emp' AND o.ID_Order='$ID_Order' ORDER BY o.ID_Order ASC";
                                                                         }
                                                                         $row_order = mysql_fetch_assoc(mysql_query($eql));
-                                                                        
+
                                                                         $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE o.ID_Order = '" . $row_order['ID_Order'] . "' ORDER BY o.ID_Order ASC";
-                                                                            $result = mysql_query($sql);
-                                                                            $orderDetail = mysql_fetch_assoc($result);
+                                                                        $result = mysql_query($sql);
+                                                                        $orderDetail = mysql_fetch_assoc($result);
 
-                                                                            if ($orderDetail['RID_Order'] == NULL) {
-                                                                               $orderx[$total_results] = $row_order;
-                                                                               $orderd[$total_results] = $order;
-                                                                                $total_results++;
-                                                                            }
+                                                                        if ($orderDetail['RID_Order'] == NULL) {
+                                                                            $orderx[$total_results] = $row_order;
+                                                                            $orderd[$total_results] = $order;
+                                                                            $total_results++;
+                                                                        }
                                                                     }
-                                                                    
-                                                                    $Num_Rows = $total_results;  
-                                                                    $limit = 7; 
-                                                                    $Per_Page = 10;     // กำหนดจำนวนแถวที่ต้องการแสดง
-                                                                    $limitlen = ceil($Num_Rows/$Per_Page);
-                                                                    if($limitlen < $limit) $limit = $limitlen; 
 
-                                                                    $Page =  1;
-                                                                    if(!empty($_GET["page"])){
-                                                                        $Page = (is_numeric($_GET["page"]) ? $_GET["page"]:1);
-                                                                    }else{
-                                                                        $Page=1;
+                                                                    $Num_Rows = $total_results;
+                                                                    $limit = 7;
+                                                                    $Per_Page = 10;     // กำหนดจำนวนแถวที่ต้องการแสดง
+                                                                    $limitlen = ceil($Num_Rows / $Per_Page);
+                                                                    if ($limitlen < $limit)
+                                                                        $limit = $limitlen;
+
+                                                                    $Page = 1;
+                                                                    if (!empty($_GET["page"])) {
+                                                                        $Page = (is_numeric($_GET["page"]) ? $_GET["page"] : 1);
+                                                                    } else {
+                                                                        $Page = 1;
                                                                     }
                                                                     $start = $Page;
-                                                                    $Prev_Page = $Page-1;
-                                                                    $Next_Page = $Page+1;
+                                                                    $Prev_Page = $Page - 1;
+                                                                    $Next_Page = $Page + 1;
 
-                                                                    $Page_Start = (($Per_Page*$Page)-$Per_Page); 
-                                                                    if($Num_Rows<=$Per_Page){
-                                                                            $Num_Pages =1;
-                                                                    }else if(($Num_Rows % $Per_Page)==0){
-                                                                            $Num_Pages =($Num_Rows/$Per_Page) ;
-                                                                    }else{
-                                                                        $Num_Pages =($Num_Rows/$Per_Page)+1;
-                                                                        $Num_Pages = (int)$Num_Pages;
+                                                                    $Page_Start = (($Per_Page * $Page) - $Per_Page);
+                                                                    if ($Num_Rows <= $Per_Page) {
+                                                                        $Num_Pages = 1;
+                                                                    } else if (($Num_Rows % $Per_Page) == 0) {
+                                                                        $Num_Pages = ($Num_Rows / $Per_Page);
+                                                                    } else {
+                                                                        $Num_Pages = ($Num_Rows / $Per_Page) + 1;
+                                                                        $Num_Pages = (int) $Num_Pages;
                                                                     }
                                                                     // end compute pagination
-                                                                     
-                                                                    
-                                                                    $inx = 0; 
-                                                                    if($Num_Rows < $Per_Page){
-                                                                        $Per_Page = $Num_Rows;
-                                                                    } 
-                                                                    if($Page_Start <= $Per_Page){
 
-                                                                    for($i = $Page_Start; $i < ($Per_Page+$Page_Start); $i++){
-                                                                    
-                                                                    //while ($order = mysql_fetch_assoc($query)) {
-                                                                        
-//                                                                        $ID_Emp = $order['ID_Emp'];
-//                                                                        $ID_Order = $order['ID_Order'];
-//                                                                        if (strpos($ID_Emp, "E") !== false) {
-//                                                                            $eql = "SELECT o.ID_Order, o.Date_Order, c.ID_Company,c.Name_Company,e.ID_Emp, e.FName_Emp, e.LName_Emp FROM orders o INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE e.ID_Emp='$ID_Emp' AND o.ID_Order='$ID_Order' ORDER BY o.ID_Order ASC ";
-//                                                                        } else if (strpos($ID_Emp, "AD") !== false) {
-//                                                                            $eql = "SELECT o.ID_Order, o.Date_Order, c.ID_Company,c.Name_Company,a.ID_Admin AS ID_Emp, a.Name_Admin AS FName_Emp, a.LName_Admin AS LName_Emp FROM orders o INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN admin a ON a.ID_Admin = o.ID_Emp WHERE a.ID_Admin='$ID_Emp' AND o.ID_Order='$ID_Order' ORDER BY o.ID_Order ASC";
-//                                                                        }
-//                                                                        $row_order = mysql_fetch_assoc(mysql_query($eql));
-                                                                        
-                                                                        ?>
-                                                                        <tr>
-                                                                            <?php
-//                                                                            $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE o.ID_Order = '" . $row_order['ID_Order'] . "' ORDER BY o.ID_Order ASC";
-//                                                                            $result = mysql_query($sql);
-//                                                                            $orderDetail = mysql_fetch_assoc($result);
-//
-//                                                                            if ($orderDetail['RID_Order'] != NULL) {
-//                                                                               
-//                                                                            } else {
-                                                                            
-                                                                                ?>
+
+                                                                    $inx = 0;
+                                                                    if ($Num_Rows < $Per_Page) {
+                                                                        $Per_Page = $Num_Rows;
+                                                                    }
+                                                                    if ($Page_Start <= $Per_Page) {
+
+                                                                        for ($i = $Page_Start; $i < ($Per_Page + $Page_Start); $i++) {
+                                                                            ?>
+                                                                            <tr>
                                                                                 <td><?php echo ++$inx; ?></td>
-                                                                                <td><?php echo $orderx[$i]['ID_Order']; ?></td> 
+                                                                                <td><a id="E<?php echo $orderx[$i]['ID_Order']; ?>" class="point"><?php echo $orderx[$i]['ID_Order']; ?></a></td> 
                                                                                 <td><?php echo $orderx[$i]['FName_Emp']; ?></td>
                                                                                 <td><?php echo $orderx[$i]['Name_Company']; ?></td>
                                                                                 <td><?php echo reverseDate($orderx[$i]['Date_Order']); ?></td>
@@ -579,22 +543,20 @@ if (empty($_SESSION['Username'])) {
                                                                                                     <th>รหัสรายละเอียดการสั่งสินค้า</th> 
                                                                                                     <th>ชื่อสินค้า</th>
                                                                                                     <th><span style="float: right;">จำนวนสินค้า</span></th>
-                                                                                                    <th><span style="float: right;">ราคารวม(บาท)</span></th>
-                                                                                                    <!-- <th>สถานะ</th>  -->
+                                                                                                    <th><span style="float: right;">ราคารวม(บาท)</span></th> 
                                                                                                     </thead>
                                                                                                     <tbody>
-                                                                                                        <?php 
-                                                                                                            $total_price = 0;
-                                                                                                        while ($orderDetail = mysql_fetch_array($result)) { 
-                                                                                                            $total_tmp = str_replace(",", "",$orderDetail['Total_Price']);
+                                                                                                        <?php
+                                                                                                        $total_price = 0;
+                                                                                                        while ($orderDetail = mysql_fetch_array($result)) {
+                                                                                                            $total_tmp = str_replace(",", "", $orderDetail['Total_Price']);
                                                                                                             $total_price += $total_tmp;
                                                                                                             ?>
                                                                                                             <tr> 
                                                                                                                 <td>
-                                                                                                                    <?php echo $orderDetail['ID_Order']; ?>
+                                                                                                                    <?php $oid =$orderDetail['ID_Order']; echo $orderDetail['ID_Order']; ?>
                                                                                                                 </td> 
-                                                                                                                <td>
-                                                                                                                    <!--<a readonly id="<?php echo $orderDetail['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetail['ID_Orderdetail']; ?></a>-->
+                                                                                                                <td> 
                                                                                                                     <?php echo $orderDetail['ID_Orderdetail']; ?>
                                                                                                                 </td>   
                                                                                                                 <td><?php echo $orderDetail['Product_Name']; ?></td>  
@@ -607,261 +569,268 @@ if (empty($_SESSION['Username'])) {
                                                                                                             <?php
                                                                                                         }
                                                                                                         ?>
-                                                                                                            <tr align="right">
-                                                                                                                <td colspan="7"> 
-                                                                                                                    ราคารวม <b><?= number_format($total_price,2) ?></b> บาท
-                                                                                                                </td>
-                                                                                                            </tr>
+                                                                                                        <tr align="right">
+                                                                                                            <td colspan="7"> 
+                                                                                                                ราคารวม <b><?= number_format($total_price, 2) ?></b> บาท
+                                                                                                            </td>
+                                                                                                        </tr>
                                                                                                     </tbody>
                                                                                                 </table>
                                                                                             </div>
-                                                                                        </div>
+                                                                                        </div><a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')";>พิมพ์ใบสั่งซื้ื้อ</a><div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
                                                                                     </div> 
 
                                                                                 </td>
+                                                                                <td><a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')";>พิมพ์ใบสั่งซื้อ</a>
+                                                                                    </td>
                                                                                 <td>
                                                                                     <?php
                                                                                     $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.Cost_Price,p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, od.ID_Count,ic.Amount_Unit,c.ID_Company, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp INNER JOIN count ic on od.ID_Count=ic.ID_Count WHERE o.ID_Order = '" . $orderx[$i]['ID_Order'] . "' ORDER BY o.ID_Order ASC";
                                                                                     $result = mysql_query($sql);
                                                                                     $orderDetail = mysql_fetch_array($result);
- 
+
                                                                                     if ($orderDetail['RID_Order'] != NULL) {
                                                                                         
                                                                                     } else {
                                                                                         ?>
-                                                                                        <a href="#update<?= $orderx[$i]['ID_Order'] ?>" class="popup-with-zoom-anim btn btn-warning" title="แก้ไขข้อมูล">
+                                                                                        <!--
+                                                                                        <a href="#updatex<?= $orderx[$i]['ID_Order'] ?>" class="popup-with-zoom-anim btn btn-warning" title="แก้ไขข้อมูล">
                                                                                             <i class="glyphicon glyphicon-pencil"></i> 
                                                                                         </a>
-                                                                                        <div id="update<?= $orderx[$i]['ID_Order'] ?>" class="zoom-anim-dialog mfp-hide dialog">
-                                                                                            <div class="panel panel-default">
-                                                                                                <div class="panel-heading"><h4>แก้ไขข้อมูลการสั่งสินค้า รหัส : <span style="color: #3399FF;"><?= $orderx[$i]['ID_Order'] ?></span></h4></div>
-                                                                                                <form action="" method="post">
-                                                                                                    <input type="hidden" name="update[ID_Order]" value="<?= $orderx[$i]['ID_Order'] ?>">
-                                                                                                    <div class="mygrid-wrapper-div">
-                                                                                                        <table class="table"> 
-                                                                                                            <thead> 
-                                                                                                            <th>รหัสรายละเอียดการสั่งสินค้า</th> 
-                                                                                                            <th>ชื่อสินค้า</th>
-                                                                                                            <th style="width: 11%;"><span style="float: right;">จำนวนสินค้า</span></th>
-                                                                                                            <th>หน่วยนับ</th>
-                                                                                                            <th style="width: 16%;"><span style="float: right;">ราคาต่อหน่วย(บาท)</span></th>
-                                                                                                            <th style="width: 13%;"><span style="float: right;">ราคารวม(บาท)</span></th>
-                                                                                                            <!-- <th>สถานะ</th>  -->
-                                                                                                            </thead>
-                                                                                                            <tbody>
-                                                                                                                <?php
-                                                                                                                $result = mysql_query($sql);
-                                                                                                                $index = 0;
-                                                                                                                $size = 0;
-                                                                                                                while ($orderDetaile = mysql_fetch_array($result)) {
-                                                                                                                    $index = $orderDetaile['ID_Orderdetail'];
-                                                                                                                    $size++;
-                                                                                                                    ?>
-                                                                                                                    <tr>   
-                                                                                                                        <td>
-                                                                                                                            <!--<a readonly id="<?php echo $orderDetaile['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetaile['ID_Orderdetail']; ?></a>-->
-                                                                                                                            <?php echo $orderDetaile['ID_Orderdetail']; ?> 
-                                                                                                                            <input type="hidden" name="UPID_Orderdetail<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['ID_Orderdetail'] ?>">
-                                                                                                                        </td>   
-                                                                                                                        <td>
-                                                                                                                            <?php
-                                                                                                                            $sql = 'select * from product where ID_Company="' . $orderDetaile['ID_Company'] . '" order by Product_Name asc';
-                                                                                                                            $rs = mysql_query($sql);
-                                                                                                                            ?>
-                                                                                                                            <select name="UPID_Product<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Product<?= $index ?>" class="idropdown" required="">
-                                                                                                                                <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
+                                                                                        -->
+                                                                                        <div id="updatex<?= $orderx[$i]['ID_Order'] ?>" class="zoom-anim-dialog mfp-hide dialog"> 
+                                                                                            <div id="panel<?= $orderx[$i]['ID_Order'] ?>" class="panal-edit">
+                                                                                                <form action="./addorder.php" method="post">
+                                                                                                    <div class="panel panel-default" > 
+
+                                                                                                        <div class="panel-heading"><h4>แก้ไขข้อมูลการสั่งสินค้า รหัส : <span style="color: #3399FF;"><?= $orderx[$i]['ID_Order'] ?></span></h4></div>
+
+                                                                                                        <input type="hidden" name="update[ID_Order]" value="<?= $orderx[$i]['ID_Order'] ?>">
+                                                                                                        <div class="mygrid-wrapper-div">
+                                                                                                            <table class="table">
+                                                                                                                <thead>
+                                                                                                                <th>รหัสรายละเอียดการสั่งสินค้า</th> 
+                                                                                                                <th>ชื่อสินค้า</th>
+                                                                                                                <th style="width: 11%;"><span style="float: right;">จำนวนสินค้า</span></th>
+                                                                                                                <th>หน่วยนับ</th>
+                                                                                                                <th style="width: 16%;"><span style="float: right;">ราคาต่อหน่วย(บาท)</span></th>
+                                                                                                                <th style="width: 13%;"><span style="float: right;">ราคารวม(บาท)</span></th> 
+                                                                                                                </thead>
+                                                                                                                <tbody>
+                                                                                                                    <?php
+                                                                                                                    $result = mysql_query($sql);
+                                                                                                                    $index = 0;
+                                                                                                                    $size = 0;
+                                                                                                                    while ($orderDetaile = mysql_fetch_array($result)) {
+                                                                                                                        $index = $orderDetaile['ID_Orderdetail'];
+                                                                                                                        $size++;
+                                                                                                                        ?>
+                                                                                                                        <tr>
+                                                                                                                            <td>
+                                                                                                                                <?php echo $orderDetaile['ID_Orderdetail']; ?>        
+                                                                                                                                <input type="hidden" name="UPID_Orderdetail<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['ID_Orderdetail'] ?>">
+                                                                                                                            </td>        
+                                                                                                                            <td>       
                                                                                                                                 <?php
-                                                                                                                                while ($row = mysql_fetch_assoc($rs)) {
-                                                                                                                                    if ($row['ID_Product'] == $orderDetaile['ID_Product']) {
-                                                                                                                                        echo '<option value="' . $row['ID_Product'] . '" selected="">' . $row['Product_Name'] . '</option>';
-                                                                                                                                    } else {
-                                                                                                                                        echo '<option value="' . $row['ID_Product'] . '">' . $row['Product_Name'] . '</option>';
-                                                                                                                                    }
-                                                                                                                                }
+                                                                                                                                $sql = 'select * from product where ID_Company="' . $orderDetaile['ID_Company'] . '" order by Product_Name asc';
+                                                                                                                                $rs = mysql_query($sql);
                                                                                                                                 ?>
-                                                                                                                            </select>
-                                                                                                                        </td>  
-                                                                                                                        <td>
-                                                                                                                            <span style="float: right;">
-                                                                                                                                <input type="text" name="UPAmount<?= $orderx[$i]['ID_Order'] ?>[]" id="UPAmount<?= $index ?>" class="form-control" style="background: #C0F9BD;text-align:right" value="<?= $orderDetaile['ODAmount_Product'] ?>"> 
-                                                                                                                            </span>
-                                                                                                                        </td>  
-                                                                                                                        <td>
-                                                                                                                            <?php
-                                                                                                                            $sql = "select * from count order by Name_Count asc";
-                                                                                                                            $cs = mysql_query($sql);
-                                                                                                                            ?>
-                                                                                                                            <select name="UPID_Count<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Count<?= $index ?>" class="idropdown" required=""> 
-                                                                                                                                <option value="" style="background: #C0F9BD">เลือกหน่วยนับ</option> 
+                                                                                                                                <select name="UPID_Product<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Product<?= $index ?>" class="idropdown" required="">
+                                                                                                                                    <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
+                                                                                                                                    <?php
+                                                                                                                                    while ($row = mysql_fetch_assoc($rs)) {
+                                                                                                                                        if ($row['ID_Product'] == $orderDetaile['ID_Product']) {
+                                                                                                                                            echo '<option value="' . $row['ID_Product'] . '" selected="">' . $row['Product_Name'] . '</option>';
+                                                                                                                                        } else {
+                                                                                                                                            echo '<option value="' . $row['ID_Product'] . '">' . $row['Product_Name'] . '</option>';
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                    ?>
+                                                                                                                                </select>
+                                                                                                                            </td>  
+                                                                                                                            <td>
+                                                                                                                                <span style="float: right;">
+                                                                                                                                    <input type="text" name="UPAmount<?= $orderx[$i]['ID_Order'] ?>[]" id="UPAmount<?= $index ?>" class="form-control" style="background: #C0F9BD;text-align:right" value="<?= $orderDetaile['ODAmount_Product'] ?>"> 
+                                                                                                                                </span>
+                                                                                                                            </td>  
+                                                                                                                            <td>
                                                                                                                                 <?php
-                                                                                                                                while ($row = mysql_fetch_assoc($cs)) {
-                                                                                                                                    if ($row['ID_Count'] == $orderDetaile['ID_Count']) {
-                                                                                                                                        echo '<option value="' . $row['ID_Count'] . '" selected="">' . $row['Name_Count'] . '</option>';
-                                                                                                                                    } else {
-                                                                                                                                        echo '<option value="' . $row['ID_Count'] . '">' . $row['Name_Count'] . '</option>';
-                                                                                                                                    }
-                                                                                                                                }
+                                                                                                                                $sql = "select * from count order by Name_Count asc";
+                                                                                                                                $cs = mysql_query($sql);
                                                                                                                                 ?>
-                                                                                                                            </select>
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <input type="hidden" id="Cost_Price_Product<?= $index ?>" value="">
-                                                                                                                            <input name="UPCost_Price<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['Cost_Price'] ?>" id="UPCost_Price<?= $index ?>" type="text" placeholder="ราคา/หน่วย" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control" required="">
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <input readonly="" type="text" name="UPTotal_Price<?= $orderx[$i]['ID_Order'] ?>[]" class="form-control" id="UPTotal_Price<?= $index ?>" value="<?= $orderDetaile['Total_Price'] ?>" style="background: #C0F9BD;text-align:right">
-                                                                                                                        </td> 
-                                                                                                                        <td> 
-                                                                                                                            <script type="text/javascript">
-                                                                                                                                        $('#UPAmount<?= $index ?>').number(true, 0);
-                                                                                                                                        $('#UPCost_Price<?= $index ?>').number(true, 2);
-                                                                                                                                        $('#UPTotal_Price<?= $index ?>').number(true, 2);
+                                                                                                                                <select name="UPID_Count<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Count<?= $index ?>" class="idropdown" required=""> 
+                                                                                                                                    <option value="" style="background: #C0F9BD">เลือกหน่วยนับ</option> 
+                                                                                                                                    <?php
+                                                                                                                                    while ($row = mysql_fetch_assoc($cs)) {
+                                                                                                                                        if ($row['ID_Count'] == $orderDetaile['ID_Count']) {
+                                                                                                                                            echo '<option value="' . $row['ID_Count'] . '" selected="">' . $row['Name_Count'] . '</option>';
+                                                                                                                                        } else {
+                                                                                                                                            echo '<option value="' . $row['ID_Count'] . '">' . $row['Name_Count'] . '</option>';
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                    ?>
+                                                                                                                                </select>
+                                                                                                                            </td>
+                                                                                                                            <td>
+                                                                                                                                <input type="hidden" id="Cost_Price_Product<?= $index ?>" value="">
+                                                                                                                                <input name="UPCost_Price<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['Cost_Price'] ?>" id="UPCost_Price<?= $index ?>" type="text" placeholder="ราคา/หน่วย" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control" required="">
+                                                                                                                            </td>
+                                                                                                                            <td>
+                                                                                                                                <input readonly="" type="text" name="UPTotal_Price<?= $orderx[$i]['ID_Order'] ?>[]" class="form-control" id="UPTotal_Price<?= $index ?>" value="<?= $orderDetaile['Total_Price'] ?>" style="background: #C0F9BD;text-align:right">
+                                                                                                                            </td> 
+                                                                                                                            <td> 
+                                                                                                                                <script type="text/javascript">
+                                                                                                                                            $("#UPAmount<?= $index ?>").number(true, 0);
+                                                                                                                                            $("#UPCost_Price<?= $index ?>").number(true, 2);
+                                                                                                                                            $("#UPTotal_Price<?= $index ?>").number(true, 2);
+                                                                                                                                            $("#UPAmount<?= $index ?>").change(function () {
+                                                                                                                                                var productId = $("#UPID_Product<?= $index ?>").val();
+                                                                                                                                                var amount = parseFloat($("#UPAmount<?= $index ?>").val());
+                                                                                                                                                amount = isNaN(amount) ? 0 : amount;
+                                                                                                                                                console.log(amount);
+                                                                                                                                                var cost = parseFloat($("#UPCost_Price<?= $index ?>").val());
+                                                                                                                                                cost = isNaN(cost) ? 0 : cost;
+                                                                                                                                                console.log(amount, cost);
 
+                                                                                                                                                if (cost != undefined && productId != "" && productId != undefined) {
+                                                                                                                                                    var total_price = cost * amount;
+                                                                                                                                                    console.log(total_price);
+                                                                                                                                                    $("#UPTotal_Price<?= $index ?>").val(total_price);
+                                                                                                                                                }
 
+                                                                                                                                                if (productId == "" || productId == undefined) {
+                                                                                                                                                    $("#UPAmount<?= $index ?>").val(<?= $orderDetaile['ODAmount_Product'] ?>);
+                                                                                                                                                    alert("กรุณาเลือกสินค้าก่อน");
+                                                                                                                                                }
+                                                                                                                                            });
 
-
-
-                                                                                                                                        $('#UPAmount<?= $index ?>').change(function () {
-
-                                                                                                                                            var productId = $('#UPID_Product<?= $index ?>').val();
-                                                                                                                                            var amount = parseFloat($('#UPAmount<?= $index ?>').val());
-                                                                                                                                            amount = isNaN(amount) ? 0 : amount;
-                                                                                                                                            console.log(amount);
-                                                                                                                                            var cost = parseFloat($('#UPCost_Price<?= $index ?>').val());
-                                                                                                                                            cost = isNaN(cost) ? 0 : cost;
-                                                                                                                                            console.log(amount, cost);
-
-                                                                                                                                            if (cost != undefined && productId != "" && productId != undefined) {
-                                                                                                                                                var total_price = cost * amount;
-                                                                                                                                                console.log(total_price);
-                                                                                                                                                $('#UPTotal_Price<?= $index ?>').val(total_price);
-                                                                                                                                            }
-
-                                                                                                                                            if (productId == "" || productId == undefined) {
-                                                                                                                                                $('#UPAmount<?= $index ?>').val(<?= $orderDetaile['ODAmount_Product'] ?>);
-                                                                                                                                                alert("กรุณาเลือกสินค้าก่อน");
-                                                                                                                                            }
-                                                                                                                                        });
-
-                                                                                                                                        $('#UPID_Product<?= $index ?>').change(function () {
-                                                                                                                                            var ID_Product = $('#UPID_Product<?= $index ?>').val();
-                                                                                                                                            console.log(ID_Product);
-                                                                                                                                            if (ID_Product != undefined && ID_Product != "") {
-                                                                                                                                                var json = {'productId': ID_Product};
-                                                                                                                                                console.log(json)
-                                                                                                                                                $.post("../admin/addorder.controller.php", json).done(function (data) {
-                                                                                                                                                    var product = JSON.parse(data);
-                                                                                                                                                    console.log(product);
-                                                                                                                                                    $('#Cost_Price_Product<?= $index ?>').val(product.Cost_Price);
-                                                                                                                                                    $('#UPCost_Price<?= $index ?>').val(product.Cost_Price);
-                                                                                                                                                });
-                                                                                                                                            } else {
-                                                                                                                                                $('#UPCost_Price<?= $index ?>').val(0);
-                                                                                                                                                $('#UPAmount<?= $index ?>').val(0);
-                                                                                                                                                $('#UPTotal_Price<?= $index ?>').val(0);
-                                                                                                                                            }
-                                                                                                                                        });
-
-                                                                                                                                        $('#UPID_Count<?= $index ?>').change(function () {
-                                                                                                                                            var cost = parseFloat($('#Cost_Price_Product<?= $index ?>').val());
-                                                                                                                                            cost = isNaN(cost) ? 0 : cost;
-                                                                                                                                            var amount = parseFloat($('#UPAmount<?= $index ?>').val());
-                                                                                                                                            amount = isNaN(amount) ? 0 : amount;
-
-                                                                                                                                            //console.log(cost, amount);
-
-                                                                                                                                            if (cost > 0 && amount > 0) {
-                                                                                                                                                var ID_Count = $('#UPID_Count<?= $index ?>').val();
-                                                                                                                                                if (ID_Count != "" && ID_Count != undefined) {
-                                                                                                                                                    var json = {'ID_Count': ID_Count};
+                                                                                                                                            $("#UPID_Product<?= $index ?>").change(function () {
+                                                                                                                                                var ID_Product = $("#UPID_Product<?= $index ?>").val();
+                                                                                                                                                console.log(ID_Product);
+                                                                                                                                                if (ID_Product != undefined && ID_Product != "") {
+                                                                                                                                                    var json = {'productId': ID_Product};
+                                                                                                                                                    console.log(json)
                                                                                                                                                     $.post("../admin/addorder.controller.php", json).done(function (data) {
-                                                                                                                                                        var unitCount = JSON.parse(data);
-                                                                                                                                                        //console.log(unitCount);
-                                                                                                                                                        var anmountUnit = parseFloat(unitCount.Amount_Unit);
-                                                                                                                                                        var total_price = cost * anmountUnit * amount;
-                                                                                                                                                        $('#UPCost_Price<?= $index ?>').val(cost * anmountUnit);
-                                                                                                                                                        $('#UPTotal_Price<?= $index ?>').val(total_price);
-
+                                                                                                                                                        var product = JSON.parse(data);
+                                                                                                                                                        console.log(product);
+                                                                                                                                                        $("#Cost_Price_Product<?= $index ?>").val(product.Cost_Price);
+                                                                                                                                                        $("#UPCost_Price<?= $index ?>").val(product.Cost_Price);
                                                                                                                                                     });
                                                                                                                                                 } else {
-                                                                                                                                                    alert("กรุณาเลือกหน่วยนับ");
+                                                                                                                                                    $("#UPCost_Price<?= $index ?>").val(0);
+                                                                                                                                                    $("#UPAmount<?= $index ?>").val(0);
+                                                                                                                                                    $("#UPTotal_Price<?= $index ?>").val(0);
                                                                                                                                                 }
-                                                                                                                                            } else if ($('#UPID_Product<?= $index ?>').val() == "" || $('#UPID_Product<?= $index ?>').val() == undefined) {
-                                                                                                                                                //                                                                                                                                                $('#UPID_Count<?= $index ?>').val("");
-                                                                                                                                                $('#UPID_Count<?= $index ?> option[value="<?= $orderDetaile['ID_Count'] ?>"]').attr("selected", "selected");
-                                                                                                                                                alert("กรุณาเลือกสินค้าก่อน");
-                                                                                                                                            } else {
-                                                                                                                                                //                                                                                                                                                $('#UPID_Count<?= $index ?>').val("");
-                                                                                                                                                $('#UPID_Count<?= $index ?> option[value="<?= $orderDetaile['ID_Count'] ?>"]').attr("selected", "selected");
-                                                                                                                                                alert("กรุณากรอกจำนวนสินค้าก่อน");
-                                                                                                                                            }
+                                                                                                                                            });
 
-                                                                                                                                        });
-                                                                                                                            </script>
-                                                                                                                        </td> 
-                                                                                                                    </tr>
+                                                                                                                                            $("#UPID_Count<?= $index ?>").change(function () {
+                                                                                                                                                var cost = parseFloat($("#Cost_Price_Product<?= $index ?>").val());
+                                                                                                                                                cost = isNaN(cost) ? 0 : cost;
+                                                                                                                                                var amount = parseFloat($("#UPAmount<?= $index ?>").val());
+                                                                                                                                                amount = isNaN(amount) ? 0 : amount;
 
-                                                                                                                    <?php
-                                                                                                                }
-                                                                                                                ?>
-                                <!--                                                                                                                <tr align="right" style="border-bottom: 1px solid #DDDDDD;">
-                                                                                                                                                    <td colspan="6">
-                                                                                                                                                        ราคารวม <span>120.00</span> บาท
-                                                                                                                                            <script>
-                                                                                                                                                for(var i = 0; i < <?= $size ?>; i++){
-                                                                                                                                                    
+
+                                                                                                                                                if (cost > 0 && amount > 0) {
+                                                                                                                                                    var ID_Count = $("#UPID_Count<?= $index ?>").val();
+                                                                                                                                                    if (ID_Count != "" && ID_Count != undefined) {
+                                                                                                                                                        var json = {'ID_Count': ID_Count};
+                                                                                                                                                        $.post("../admin/addorder.controller.php", json).done(function (data) {
+                                                                                                                                                            var unitCount = JSON.parse(data);
+                                                                                                                                                            var anmountUnit = parseFloat(unitCount.Amount_Unit);
+                                                                                                                                                            var total_price = cost * anmountUnit * amount;
+                                                                                                                                                            $("#UPCost_Price<?= $index ?>").val(cost * anmountUnit);
+                                                                                                                                                            $("#UPTotal_Price<?= $index ?>").val(total_price);
+
+                                                                                                                                                        });
+                                                                                                                                                    } else {
+                                                                                                                                                        alert("กรุณาเลือกหน่วยนับ");
+                                                                                                                                                    }
+                                                                                                                                                } else if ($("#UPID_Product<?= $index ?>").val() == "" || $("#UPID_Product<?= $index ?>").val() == undefined) {
+                                                                                                                                                    $('#UPID_Count<?= $index ?>').val("");
+                                                                                                                                                    $("#UPID_Count<?= $index ?> option[value='<?= $orderDetaile['ID_Count'] ?>']").attr("selected", "selected");
+                                                                                                                                                    alert("กรุณาเลือกสินค้าก่อน");
+                                                                                                                                                } else {
+                                                                                                                                                    $('#UPID_Count<?= $index ?>').val("");
+                                                                                                                                                    $("#UPID_Count<?= $index ?> option[value='<?= $orderDetaile['ID_Count'] ?>']").attr("selected", "selected");
+                                                                                                                                                    alert("กรุณากรอกจำนวนสินค้าก่อน");
                                                                                                                                                 }
-                                                                                                                                            </script>
-                                                                                                                                                    </td>
-                                                                                                                                                </tr>-->
-                                                                                                            </tbody>
-                                                                                                        </table>
-                                                                                                    </div>
-                                                                                                    <div style="float: right;padding: 0px;">
+
+                                                                                                                                            });
+                                                                                                                                </script>
+                                                                                                                            </td> 
+                                                                                                                        </tr>
+                                                                                                                        <?php
+                                                                                                                    }
+                                                                                                                    ?>
+                                                                                                                </tbody>
+                                                                                                            </table>
+                                                                                                        </div> 
+                                                                                                    </div> 
+                                                                                                    <div style="text-align: right;">
                                                                                                         <div>
                                                                                                             <input type="submit" value="แก้ไข" class="btn btn-warning" name="update[submit]">
-                                                                                                            <a class="btn btn-default" onclick="$.magnificPopup.close()">ยกเลิก</a>
+                                                                                                            <a class="btn btn-default" id="close<?= $orderd[$i]['ID_Order'] ?>">ยกเลิก</a>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </form>
+                                                                                                <div id="formDelete<?= $orderd[$i]['ID_Order'] ?>" style="width: 89%;margin-top: -20px;">
+                                                                                                    <form action="./addorder.php" method="post" style="text-align: right;">
+                                                                                                        <input type="hidden" name="DELID_Order" value="<?= $orderd[$i]['ID_Order'] ?>">
+                                                                                                        <button type="submit" name="deleteOrder" onclick="return confirm('ยืนยันการลบข้อมูล');" title="ลบข้อมูล" class="btn btn-danger" style="margin-top: -28px;margin-left: 47px;"><i class="glyphicon glyphicon-remove"></i> ลบข้อมูล</button>
+                                                                                                    </form> 
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div> 
-                                                                                        <form action="./addorder.php" method="post">
-                                                                                            <input type="hidden" name="DELID_Order" value="<?= $orderd[$i]['ID_Order'] ?>">
-                                                                                            <button type="submit" name="deleteOrder" onclick="return confirm('ยืนยันการลบข้อมูล');" title="ลบข้อมูล" class="btn btn-danger" style="margin-top: -28px;margin-left: 47px;"><i class="glyphicon glyphicon-remove"></i></button>
-                                                                                        </form>
                                                                                         <?php
                                                                                     }
                                                                                     ?> 
-                                                                                </td>
-                                                                            <?php //} ?>
-                                                                    <script type="text/javascript">
-                                                                                $(".popup-with-zoom-anim").magnificPopup({
-                                                                                    type: 'inline',
-                                                                                    fixedContentPos: false,
-                                                                                    fixedBgPos: true,
-                                                                                    overflowY: 'auto',
-                                                                                    closeBtnInside: true,
-                                                                                    preloader: false,
-                                                                                    midClick: true,
-                                                                                    removalDelay: 300,
-                                                                                    mainClass: 'my-mfp-zoom-in'
-                                                                                });
-                                                                    </script>
-                                                                    </tr>
-                                                                    <script type="text/javascript">
-                                                                                $("#<?= $orderx[$i]['ID_Order'] ?>").click(function () {
-                                                                                    $('#add').hide();
-                                                                                    ID_Order.value = "<?= $orderx[$i]['ID_Order'] ?>";
-                                                                                    document.getElementById("ID_Emp")[0].text = "<?= $orderx[$i]['FName_Emp'] ?>";
-                                                                                    document.getElementById("ID_Emp")[0].value = "<?= $orderx[$i]['ID_Emp'] ?>";
-                                                                                    document.getElementById("ID_Company")[0].text = "<?= $orderx[$i]['Name_Company'] ?>";
-                                                                                    document.getElementById("ID_Company")[0].value = "<?= $orderx[$i]['ID_Company'] ?>";
-                                                                                    datetimepicker1.value = "<?= reverseDate($orderx[$i]['Date_Order']) ?>";
-                                                                                });
+                                                                                </td> 
+                                                                        <script type="text/javascript"> 
+                                                                                    $(".popup-with-zoom-anim").magnificPopup({
+                                                                                        type: 'inline',
+                                                                                        fixedContentPos: false,
+                                                                                        fixedBgPos: true,
+                                                                                        overflowY: 'auto',
+                                                                                        closeBtnInside: true,
+                                                                                        preloader: false,
+                                                                                        midClick: true,
+                                                                                        removalDelay: 300,
+                                                                                        mainClass: 'my-mfp-zoom-in'
+                                                                                    });
+                                                                                    
+                                                                                    $('#E<?php echo $orderDetail['ID_Order']; ?>').click(function () {
+                                                                                        $('.table-add').hide();
+                                                                                        $('.table-edit').show();
+                                                                                        $('#panel<?= $orderx[$i]['ID_Order'] ?>').appendTo($('#table-edit')); 
+                                                                                        console.log($( ".table-edit" ).length);
+                                                                                        $('#panel<?= $orderx[$i]['ID_Order']; ?>').show();
+                                                                                        $('.panal-edit').not('#panel<?= $orderx[$i]['ID_Order']; ?>').hide();
+                                                                                    });
+                                                                                    
+                                                                                    $('#close<?= $orderd[$i]['ID_Order'] ?>').click(function(){
+                                                                                        $('.table-add').show();
+                                                                                        $('.table-edit').hide();
+                                                                                        $('#pfrom').text("");
+                                                                                        $('#table-edit').text("");
+                                                                                    });
+                                                                        </script>
+                                                                        </tr>
+                                                                        <script type="text/javascript">
+                                                                                    $("#<?= $orderx[$i]['ID_Order'] ?>").click(function () {
+                                                                                        $('#add').hide();
+                                                                                        ID_Order.value = "<?= $orderx[$i]['ID_Order'] ?>";
+                                                                                        document.getElementById("ID_Emp")[0].text = "<?= $orderx[$i]['FName_Emp'] ?>";
+                                                                                        document.getElementById("ID_Emp")[0].value = "<?= $orderx[$i]['ID_Emp'] ?>";
+                                                                                        document.getElementById("ID_Company")[0].text = "<?= $orderx[$i]['Name_Company'] ?>";
+                                                                                        document.getElementById("ID_Company")[0].value = "<?= $orderx[$i]['ID_Company'] ?>";
+                                                                                        datetimepicker1.value = "<?= reverseDate($orderx[$i]['Date_Order']) ?>";
+                                                                                    });
 
-                                                                    </script>
-                                                                    <?php }} ?>
+                                                                        </script>
+                                                                        <?php
+                                                                    }
+                                                                }
+                                                                ?>
 
                                                                 </tbody>
                                                             </table>
@@ -871,31 +840,31 @@ if (empty($_SESSION['Username'])) {
                                                 </div>
                                                 <!-- pagination -->
                                                 <table style="float: right;">
-                                                <tr>
-                                                    <td><span>Total <?php echo $Num_Rows;?> Record : <?php echo $Num_Pages;?> Pages&nbsp;&nbsp;</span></td>
-                                                  <td>
-                                                      <ul class="pagination" style="margin: 0px;">  
-                                                    <?php
-                                                    if($Prev_Page){
-                                                      echo '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?page='.$Prev_Page.'"><span>«Back</span></a></li>';
-                                                    }
-                                                    $endlimit = (($start+$limit) <= $Num_Pages) ? ($start+$limit) : $Num_Pages;
-                                                    $end = ($Num_Pages == 1) ? 1 :$endlimit;
-                                                    for($i = $start; $i <= $end; $i++){
-                                                      if($i != $Page){
-                                                        echo "<li><a href='$_SERVER[SCRIPT_NAME]?page=$i'>$i</a></li>";
-                                                      }else{
-                                                        echo "<li class='active'><a href='$_SERVER[SCRIPT_NAME]?page=$i'>$i</a></li>";
-                                                      }
-                                                    } 
-                                                    if($Page!=$Num_Pages){
-                                                      echo "<li><a href='".$_SERVER['SCRIPT_NAME']."?page=".$Next_Page."'><span>Next»</span></a></li>";
-                                                    } 
-                                                    ?>
-                                                    </ul>
-                                                  </td>
-                                                </tr>
-                                              </table> 
+                                                    <tr>
+                                                        <td><span>Total <?php echo $Num_Rows; ?> Record : <?php echo $Num_Pages; ?> Pages&nbsp;&nbsp;</span></td>
+                                                        <td>
+                                                            <ul class="pagination" style="margin: 0px;">  
+                                                                <?php
+                                                                if ($Prev_Page) {
+                                                                    echo '<li><a href="' . $_SERVER['SCRIPT_NAME'] . '?page=' . $Prev_Page . '"><span>«Back</span></a></li>';
+                                                                }
+                                                                $endlimit = (($start + $limit) <= $Num_Pages) ? ($start + $limit) : $Num_Pages;
+                                                                $end = ($Num_Pages == 1) ? 1 : $endlimit;
+                                                                for ($i = $start; $i <= $end; $i++) {
+                                                                    if ($i != $Page) {
+                                                                        echo "<li><a href='$_SERVER[SCRIPT_NAME]?page=$i'>$i</a></li>";
+                                                                    } else {
+                                                                        echo "<li class='active'><a href='$_SERVER[SCRIPT_NAME]?page=$i'>$i</a></li>";
+                                                                    }
+                                                                }
+                                                                if ($Page != $Num_Pages) {
+                                                                    echo "<li><a href='" . $_SERVER['SCRIPT_NAME'] . "?page=" . $Next_Page . "'><span>Next»</span></a></li>";
+                                                                }
+                                                                ?>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </table> 
                                             </div>
                                         </div>
                                         <div class="row">
@@ -914,8 +883,18 @@ if (empty($_SESSION['Username'])) {
             </div>
         </article>
         <footer>
+            <script>
+            function popWin(oid){
+                window.open('print_addorder.php?id='+oid+'' , 'mypopup' , 'nenuber=no,toorlbar=no,location=no,scrollbars=no, status=no,resizable=no,width=1000,height=500,top=120,left=350 ' );
+                mypopup.focus();
+            }
+            function myFunction() {
+                window.print();
+            }
+            </script>
             <script type="text/javascript">
                 $(document).ready(function () {
+                    $('.table-edit').hide();
                     $('#order').addClass('active');
                     $('#sub1').show();
                     $('#orderlist').css({background: "#e8e8e8"});

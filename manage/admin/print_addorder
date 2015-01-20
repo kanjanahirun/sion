@@ -1,0 +1,32 @@
+<?php
+session_start();
+
+include("../connect/connect.php");
+
+if (empty($_SESSION['Username'])) {
+    if (empty($_SESSION['Username']) || empty($_SESSION['status']) || empty($_SESSION['name'])) {
+        echo alert('กรุณาเข้าสู่ระบบ Admin ก่อน');
+        echo location("../login.php");
+    }
+} else {  ?>
+
+<html>
+<head>
+    <title> ร้านศรีอ้น แฮร์ & สปาร์ </title>
+
+    <?php include("../fragments/libmanage.php"); ?>
+
+</head>
+
+<body id="bg">
+    <table> 
+        <tr>
+            <td>แบบฟอร์มการส่ังซื้อสินค้า</td>
+        </tr>
+    </table>
+</body>
+
+</html>
+
+
+<?php } ?>

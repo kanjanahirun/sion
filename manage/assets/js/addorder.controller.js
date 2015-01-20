@@ -1,4 +1,5 @@
 var app = angular.module("sion", []);
+
 app.filter('range', function () {
     return function (input, total) {
         total = parseInt(total);
@@ -7,6 +8,7 @@ app.filter('range', function () {
         return input;
     };
 });
+
 app.directive('onlyDigits', function () {
     return {
         restrict: 'A',
@@ -34,11 +36,12 @@ app.factory("numrows", function () {
     return numrows;
 });
 
-app.controller("addorderController", function ($scope,numrows) {
+app.controller("addorderController", function ($scope) {
 
     $scope.orders = [];
-    $scope.numrows = numrows;
-//    $scope.numrows = [{index: 0}];
+//    $scope.numrows = numrows;
+    $scope.index = [];
+    $scope.numrows = 1;
     $scope.numorders = "";
     $scope.ID_Product = [];
     $scope.Amount_Product = [];
@@ -46,6 +49,7 @@ app.controller("addorderController", function ($scope,numrows) {
     $scope.Cost_Price_Product = [];
     $scope.Total_Price = [];
     $scope.ID_Count = [];
+    $scope.end = 1000;
 
 //    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
@@ -77,26 +81,102 @@ app.controller("addorderController", function ($scope,numrows) {
     $scope.init = function (value) {
         return value;
     };
+    
+    $scope.input = [];
+    $scope.range = function(min, max){
+        $scope.input = [];
+        for (var i = min; i <= max; i++) $scope.input.push(i);
+        return $scope.input;
+    };
+
+    $scope.searchMax = function(index){
+        var max = index[0];
+        for(var i = 0; i < index.length; i++){
+            if(index[i] != ""){
+                if(max < index[i]){
+                    max = index[0];
+                }
+            }
+        }
+        return max;
+    };
 
     $scope.numRows = function (numorders, option) {
         var i = 0;
         if (option == 1) {
-            for (i = 0; i < parseInt(numorders); i++) {
-                numrows[i] = {index: i};
-            }
-//            $scope.numrows = parseInt(numorders);
+//            for (i = 0; i < parseInt(numorders); i++) {
+//                numrows[i] = {index: i};
+//            }
+            $scope.numrows = parseInt(numorders);
         }
         else if (option == 2) {
-            numrows.push({index: parseInt(numorders) + 1});
-//            $scope.numrows = parseInt(numorders) + 1;
+//            numrows.push({index: parseInt(numorders) + 1});
+            $scope.end = $scope.searchMax($scope.index) + 1; 
+            $scope.numrows = parseInt($scope.numrows) + 1;
+//            $scope.index[$scope.numrows-1] = end;
         }
     };
 
-    $scope.deleteRow = function (index) { 
+    $scope.searchStart = function(index){
+        var start = 1;
+        for(var i = $scope.index.length-1; i > 0 ; i--){
+            if(i < index){
+                if($scope.index[i] != ""){
+                    start = $scope.index[i];
+                    console.log("start",i,$scope.index[i]);
+                    break;
+                }
+            }
+        }
+        return start;
+    };
+
+    $scope.searchEnd = function(index){
+        var end = 0;
+        for(var j = $scope.index[index]-1; j < $scope.index.length; j++){
+            if(j > index){
+                if($scope.index[j] != ""){
+                    end = $scope.index[j];
+                    console.log("end",j,$scope.index[j]);
+                    break;
+                }
+            }
+        }
+        return end;
+    };
+    
+    $scope.changeIndex = function(start){
+        var id = start;
+        for(var c = start; c < $scope.index.length; c++){
+            console.log(c);
+            if(c != $scope.index[start]){
+                if($scope.index[c] != ""){
+                    id++;
+                    $scope.index[c] = id;
+                }
+            }
+        }
+    };
+    
+    $scope.deleteRow = function (index,num) { 
 //        $scope.numrows.splice(index, 1);
-        numrows.splice(index, 1);
+//        numrows.splice(index, 1);
         
-//        $("#ng" + index).remove();
+        $("#ng" + index).remove();
+        
+        // remove value in array
+        $scope.index[index] = ""; 
+        $scope.input[index] = -1;
+        $scope.end = -1;
+        // search index 
+        var start = $scope.searchStart(index);
+        var end = $scope.searchEnd(index);
+        
+        // change index
+        $scope.changeIndex(start);
+        
+        
+//        $scope.numrows = $scope.numrows - parseInt(num);
 //        for(var i = 0; i < $scope.numrows.length; i++){
 //            if (index == i) {
 //                $scope.numrows.splice(index, 1);
@@ -104,7 +184,6 @@ app.controller("addorderController", function ($scope,numrows) {
 //                break; 
 //            }
 //        } 
-
        
     };
 
