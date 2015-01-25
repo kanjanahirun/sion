@@ -167,7 +167,8 @@ if (empty($_SESSION['Username'])) {
                                                                                             <?php $getorder = $orderDetail['ID_Order'];  echo $orderDetail['ID_Order']; ?>
                                                                                         </td> 
                                                                                         <td>
-                                                                                            <a readonly id="<?php echo $orderDetail['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetail['ID_Orderdetail']; ?></a>
+                                                                                            <a readonly id="<?php $oid =$orderDetail['ID_Order'];
+                                                                                            echo $orderDetail['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetail['ID_Orderdetail']; ?></a>
                                                                                         </td>   
                                                                                         <td><?php echo $orderDetail['Product_Name']; ?></td>  
                                                                                         <td><span style="float: right;"><?php echo $orderDetail['ODAmount_Product']; ?></span></td>  
@@ -188,7 +189,7 @@ if (empty($_SESSION['Username'])) {
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a>
+                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')"; >พิมพ์ใบสั่งซื้อ</a>
                                                                 <div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
                                                             </div>
 

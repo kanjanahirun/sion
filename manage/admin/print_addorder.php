@@ -103,7 +103,12 @@ if (empty($_SESSION['Username'])) {
             ?>
                     <tr>
                         <td width="30%">
-                            รหัสผู้สั่ง
+                            รหัสผู้สั่ง <?php
+                                $num1 = 2;
+                                $num2 = 5; 
+                                $sum = $num1*$num2;
+                                echo $sum;
+                             ?>
                         </td>
                         <td>
                             <!-- coding --><?php echo $orderDetail['ID_Emp']; ?>
@@ -197,7 +202,7 @@ if (empty($_SESSION['Username'])) {
     window.onload=function(){
         GetClock();
         setInterval(GetClock,1000);
-        // window.print();
+        window.print();
     }
     </script> 
 </body>
