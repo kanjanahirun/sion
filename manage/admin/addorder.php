@@ -768,7 +768,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                         </div> 
                                                                                                     </div> 
                                                                                                     <div style="text-align: right;">
-                                                                                                        <div>
+                                                                                                        <div style="margin-right: 50%;">
                                                                                                             <input type="submit" value="แก้ไข" class="btn btn-warning" name="update[submit]">
                                                                                                             <a class="btn btn-default" id="close<?= $orderd[$i]['ID_Order'] ?>">ยกเลิก</a>
                                                                                                         </div>
