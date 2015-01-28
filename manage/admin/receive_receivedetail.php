@@ -144,7 +144,8 @@ if (empty($_SESSION['Username'])) {
 
                                 <?php if (!empty($_GET['q'])) { ?>
                                                 <?php
-                                                $asql = "SELECT * FROM orders o RIGHT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN receive_detail rd ON r.ID_Receive = rd.ID_Receive INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp  WHERE r.ID_Receive LIKE '" . $_GET['q'] . "' ORDER BY r.ID_Receive ASC";
+                                                $asql = "SELECT * FROM receive_detail rd, product p ,receive r WHERE rd.ID_Receive = '" . $_GET['q'] . "' AND rd.ID_Product = p.ID_Product AND rd.ID_Receive = r.ID_Receive";
+                                                // $asql = "SELECT * FROM orders o RIGHT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN receive_detail rd ON r.ID_Receive = rd.ID_Receive INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp  WHERE r.ID_Receive LIKE '" . $_GET['q'] . "' ORDER BY r.ID_Receive ASC";
                                                 $result = mysql_query($asql)or die(mysql_error() . ":<br />" . $sql_select);;
                                                 ?> 
                                                 <div style="top: 342px; position: absolute; height: 1138px;" tabindex="-1" class="mfp-wrap mfp-close-btn-in mfp-auto-cursor my-mfp-zoom-in mfp-ready">
@@ -169,7 +170,7 @@ if (empty($_SESSION['Username'])) {
                                                                         <tbody>
                                                                                                     <?php
                                                                                                     $inx = 0;
-                                                                                                    while ($receive_detail = mysql_fetch_array($result)) { echo "d"; echo $receive_detail['Amount_NonRe'];
+                                                                                                    while ($receive_detail = mysql_fetch_array($result)) { ;
                                                                                                         
                                                                                                             ?>
                                                                                                         <tr>
@@ -201,7 +202,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                                 if ($receive_detail['Amount_NonRe'] != 0) {
                                                                                                                     ?>
                                                                                                                     <a class="popup-with-zoom-anim btn btn-warning" HREF="#small<?= $receive_detail['ID_Receivedetail'] ?>">รับสินค้าที่เหลือ</a>
-                                                                                                                    <div id="small<?= $receive_detail['ID_Receivedetail'] ?>" class="zoom-anim-dialog mfp-hide dialog">
+                                                                                                                    <div id="small<?= $receive_detail['ID_Receivedetail'] ?>" class="zoom-anim-dialog mfp-hide dialog" style="top: 342px; position: absolute;">
                                                                                                                         <form action="" method="post">
                                                                                                                             <div class="panel panel-default">
                                                                                                                                 <div class="panel-heading"><h4>ข้อมูลรายละเอียดการสั่งสินค้า</h4></div>
@@ -403,7 +404,8 @@ if (empty($_SESSION['Username'])) {
                                                     <select name="ID_Order" id="ID_Order" class="idropdown" placeholder="เลือกรหัสการสั่งสินค้า" required="" >
                                                         <option value="" style="background: #C0F9BD">เลือกรหัสการสั่งสินค้า</option>
                                                         <?php
-                                                        $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE r.ID_Order IS NULL ORDER BY o.ID_Order DESC";
+                                                        $sql = "select * from receive r RIGHT JOIN orders o ON r.ID_Order = o.ID_Order WHERE r.ID_Order IS NULL ORDER BY o.ID_Order DESC";
+                                                        // $sql = "SELECT o.ID_Order, o.Date_Order, r.ID_Receive, r.Date_Receive, r.ID_Order AS RID_Order, od.ID_Orderdetail, p.ID_Product, od.Amount_Product AS ODAmount_Product, od.Total_Price, c.Name_Company, p.Product_Name, p.Amount_Product AS PAmount_Product, p.Cost_Price, p.Sale_Price, p.Point_Purchase, e.FName_Emp, e.LName_Emp ,o.ID_Company FROM orders o LEFT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp WHERE r.ID_Order IS NULL ORDER BY o.ID_Order DESC";
                                                         $result = mysql_query($sql);
                                                         // $orderDetail = mysql_fetch_array($cubrid_result(result, row));
                                                         // $sql = "SELECT * FROM orders ORDER BY ID_Order DESC";
@@ -481,7 +483,7 @@ if (empty($_SESSION['Username'])) {
                                                     <label>ชื่อบริษัท</label>
                                                 </td>
                                                 <td style="border: none;">
-                                                    <input class="form-control point" name="ID_Company" ID="ID_Company" type="text" placeholder="ชื่อบริษัทคู่ค้า" value="<?= $_POST['orders'] ?>" readonly="" style="width: 60%;"><input type="hidden" name="ID_Company" id="ID_Company" value="<?= $orderDetail["ID_Company"]; ?>">
+                                                    <input class="form-control point" name="Name_Company" ID="Name_Company" type="text" placeholder="ชื่อบริษัทคู่ค้า" value="" readonly="" style="width: 60%;"><input type="hidden" name="ID_Company" id="ID_Company" value="">
                                                     <!-- <select name="ID_Company"  style="width: 100%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
                                                         <option value="" style="background: #C0F9BD">ชื่อบริษัท</option>
                                                             <?php
@@ -1001,8 +1003,12 @@ if (empty($_SESSION['Username'])) {
 
                         $.post("./receive.controller.php", json, function (data, status) {
                             var orders = JSON.parse(data);
+                            // console.log(orders);
                             if (orders)
-                                $('#ID_Company option[value=' + (orders.ID_Company) + ']').attr('selected', 'selected');
+                                $('#ID_Company').val(orders.ID_Company);
+                                $('#Name_Company').val(orders.Name_Company);
+
+                                // $('#ID_Company option[value=' + (orders.ID_Company) + ']').attr('selected', 'selected');
                         });
 
                         var notfound = '<tr><td colspan="8"><center><h2 style="color: rgb(237, 45, 45);">ไม่พบรายการที่ท่านเลือก!</h2></center></td></tr>';
