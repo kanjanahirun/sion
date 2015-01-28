@@ -45,20 +45,23 @@ if (empty($_SESSION['Username'])) {
 
         $sqlReceive = "INSERT INTO `receive` ( `ID_Receive` , `Date_Receive` , `ID_Emp` , `ID_Company` , `ID_Order` ) VALUES ( '" . $ID_Receive . "', '" . $Date_Order . "', '" . $ID_Emp . "', '" . $ID_Company . "', '" . $ID_Order . "' )";
 //    echo $sqlReceive."<br>";
-        $result = mysql_query($sqlReceive);
-        if ($result != 0) {
+        $result = mysql_query($sqlReceive); 
+//        $result = 1;
+        if ($result) {
             $success = 0;
             $ID_Receivedetail = $lastID['ID_Receivedetail'];
             for ($i = 0; $i < count($ID_Orderdetail); $i++) {
                 $ID_Receivedetail = generateIDbyFix($ID_Receivedetail, 2, "OD");
 
-                $sqlReceiveDetail = "INSERT INTO `receive_detail` ( `ID_Receivedetail` , `ID_Receive` , `ID_Product` ,`Amount_Receive`, `Amount_NonRe`,`ID_Count`,`Cost_Price`,`Amount_balance`, `Product_Remand` ) VALUES ( '" . $ID_Receivedetail . "', '" . $ID_Receive . "', '" . $ID_Product[$i] . "','" . $Amount_Receive[$i] . "','" . $Amount_NonRe[$i] . "','" . $ID_Count[$i] . "','" . $Cost_Price[$i] . "','" . $Amount_balance[$i] . "', '" . $Product_Remand . "' );";
-//            echo $sqlReceiveDetail."<br>";
+                $sqlReceiveDetail = "INSERT INTO `receive_detail` ( `ID_Receivedetail` , `ID_Receive` , `ID_Product` ,`Amount_Receive`, `Amount_NonRe`,`ID_Count`,`Cost_Price`,`Amount_balance`, `Product_Remand` ) VALUES ( '" . $ID_Receivedetail . "', '" . $ID_Receive . "', '" . $ID_Product[$i] . "','" . $Amount_Receive[$i] . "','" . $Amount_NonRe[$i] . "','" . $ID_Count[$i] . "','" . $Cost_Price[$i] . "','" . $Amount_balance[$i] . "', '" . $Product_Remand . "' )";
+//                echo $sqlReceiveDetail."<br>";
                 $RS = mysql_query($sqlReceiveDetail);
-                if ($RS != 0) {
+//                $RS = 1;
+                if ($RS) {
                     $success++;
                     $sqlIncrementProduct = "UPDATE `product` SET Amount_Product = Amount_Product + " . intval($Amount_Receive[$i]) . " WHERE ID_Product = '" . $ID_Product[$i] . "'";
                     $queryIncrementProduct = mysql_query($sqlIncrementProduct);
+                     //echo $sqlIncrementProduct."<br>";
                 }
             }
             if ($success == count($ID_Orderdetail)) {
@@ -127,22 +130,7 @@ if (empty($_SESSION['Username'])) {
                             <?php include("../fragments/sidebar.php"); ?>
                         </div> 
                         <div class="col-md-10">
-                            <form action="" method="post">
-                                <div>
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li Class = "active"><a href="./receive_receivedetail.php">จัดการข้อมูลการรับสินค้า</a></li>
-                                        <li role="presentation" class="dropdown" style="float: right;margin-right: -2px;">
-                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="min-width: 160px;">
-                                                <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ""; ?> <span class="caret"></span>
-                                            </a>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><a href="../logout.php">ออกจากระบบ</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <?php if (!empty($_GET['q'])) { ?>
+                             <?php if (!empty($_GET['q'])) { ?>
                                                 <?php
                                                 $asql = "SELECT * FROM receive_detail rd, product p ,receive r WHERE rd.ID_Receive = '" . $_GET['q'] . "' AND rd.ID_Product = p.ID_Product AND rd.ID_Receive = r.ID_Receive";
                                                 // $asql = "SELECT * FROM orders o RIGHT JOIN receive r ON o.ID_Order = r.ID_Order INNER JOIN receive_detail rd ON r.ID_Receive = rd.ID_Receive INNER JOIN order_detail od ON o.ID_Order = od.ID_Order INNER JOIN company c ON c.ID_Company = o.ID_Company INNER JOIN product p ON p.ID_Product = od.ID_Product INNER JOIN employees e ON e.ID_Emp = o.ID_Emp  WHERE r.ID_Receive LIKE '" . $_GET['q'] . "' ORDER BY r.ID_Receive ASC";
@@ -354,7 +342,7 @@ if (empty($_SESSION['Username'])) {
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                                <!-- <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a> -->
+                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a>
                                                                 <div style="text-align: right;"><a href="./receive_receivedetail.php" class="btn btn-default">ปิด</a></div>
                                                             </div>
 
@@ -378,8 +366,20 @@ if (empty($_SESSION['Username'])) {
                                                 
                                             }
                                             ?>
-
-
+                            <form action="" method="post">
+                                <div>
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li Class = "active"><a href="./receive_receivedetail.php">จัดการข้อมูลการรับสินค้า</a></li>
+                                        <li role="presentation" class="dropdown" style="float: right;margin-right: -2px;">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="min-width: 160px;">
+                                                <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ""; ?> <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="../logout.php">ออกจากระบบ</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>  
                                 <?php
                                 $lastsql = "SELECT ID_receivedetail From receive_detail order by ID_receivedetail DESC LIMIT 1";
                                 $result = mysql_query($lastsql);
