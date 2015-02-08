@@ -342,7 +342,7 @@ if (empty($_SESSION['Username'])) {
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a>
+                                                                <!-- <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin()"; >พิมพ์ใบสั่งซื้อ</a> -->
                                                                 <div style="text-align: right;"><a href="./receive_receivedetail.php" class="btn btn-default">ปิด</a></div>
                                                             </div>
 

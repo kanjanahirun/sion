@@ -12,7 +12,7 @@ if (empty($_SESSION['Username'])) {
 
     if (!empty($_POST['Button'])) {
         $button = $_POST['Button'];
-        if ($button == 'เพิ่มข้อมูล') {
+        if ($button == 'ยืนยัน') {
 
             $strCount = "SELECT * FROM orders ORDER BY ID_Order DESC LIMIT 1";
             $objQueryCount = mysql_query($strCount);
@@ -167,8 +167,7 @@ if (empty($_SESSION['Username'])) {
                                                                                             <?php $getorder = $orderDetail['ID_Order'];  echo $orderDetail['ID_Order']; ?>
                                                                                         </td> 
                                                                                         <td>
-                                                                                            <a readonly id="<?php $oid =$orderDetail['ID_Order'];
-                                                                                            echo $orderDetail['ID_Orderdetail']; ?>" class="point"><?php echo $orderDetail['ID_Orderdetail']; ?></a>
+                                                                                            <?php echo $orderDetail['ID_Orderdetail']; ?>
                                                                                         </td>   
                                                                                         <td><?php echo $orderDetail['Product_Name']; ?></td>  
                                                                                         <td><span style="float: right;"><?php echo $orderDetail['ODAmount_Product']; ?></span></td>  
@@ -371,13 +370,13 @@ if (empty($_SESSION['Username'])) {
                                                                             </tr> 
                                                                             <tr align="center">
                                                                                 <td colspan="8"> 
-                                                                                    <a ng-click="numRows(numrows, 2)" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>เพิ่มแถว</a>
+                                                                                    <a ng-click="numRows(numrows, 2)" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>เพิ่มข้อมูล</a>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr align="right">
                                                                                 <td colspan="8">
-                                                                                    <input id="add" type="submit" class="btn btn-primary" name="Button" value="เพิ่มข้อมูล">
+                                                                                    <input id="add" type="submit" class="btn btn-primary" name="Button" value="ยืนยัน">
                                                                                     <a href="./addorder.php" class="btn btn-default">ยกเลิก</a>  
                                                                                 </td>
                                                                             </tr>

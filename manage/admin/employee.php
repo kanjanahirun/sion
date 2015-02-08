@@ -306,7 +306,7 @@ if (!empty($_POST['Button'])) {
                                         <input id="update"type="submit" class="btn btn-warning" name="Button" value="แก้ไขข้อมูล">
                                         <input onclick="return checkID_Emp();" id="delete"type="submit" class="btn btn-danger" name="Button" value="ลบข้อมูล">
                                         <input id="cancle" type="reset" class="btn btn-default" name="Button" value="ยกเลิก">
-                                        <input onclick="reset()" id="cancle" type="reset" class="btn btn-default" name="Button" value="ยกเลิก">
+                                        <!-- <input onclick="reset()" id="cancle" type="reset" class="btn btn-default" name="Button" value="ยกเลิก"> -->
                                         <script type="text/javascript">
                                             $('#Salary').number(true, 2);
                                             $('#cancle').click(function () {
