@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include("../connect/connect.php");
 
 if (empty($_SESSION['Username'])) {
@@ -151,8 +150,8 @@ if (empty($_SESSION['Username'])) {
                                                                             <th><span style="float:right;">จำนวนที่รับ</span></th>
                                                                             <th><span style="float:right;">จำนวนค้างรับ</span></th>
                                                                             <th>หน่วยนับ</th>
-                                                                            <th><span style="float:right;">หน่วยละ/บาท</span></th>
-                                                                            <th><span style="float:right;">ยอดชำระ/บาท</span></th>
+                                                                            <th><span style="float:right;">หน่วย(บาท)</span></th>
+                                                                            <th><span style="float:right;">ยอดรวม(บาท)</span></th>
                                                                             <th>สถานะ</th>
                                                                         </thead>
                                                                         <tbody>
@@ -205,8 +204,8 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                 <th>จำนวนที่รับ</th>
                                                                                                                                                 
                                                                                                                                                 <th>หน่วยนับ</th>
-                                                                                                                                                <th>หน่วยละ/บาท</th>
-                                                                                                                                                <th>ยอดชำระ/บาท</th>
+                                                                                                                                                <th>หน่วยละ(บาท)</th>
+                                                                                                                                                <th>ยอดรวม(บาท)</th>
                                                                                                                                             </tr>
                                                                                                                                         </thead>
                                                                                                                                         <tbody>
@@ -228,6 +227,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                 </td>
                                                                                                                                                 <td>
                                                                                                                                                     <input type="text" style="text-align:right" name="Number_Product2" id="Number_Product<?= $idx ?>" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="<?php echo $receive_detail['Amount_NonRe'] ?>">
+                                                                                                                                                    <input type="hidden" style="text-align:right" name="Number_t2" id="Number_Product22<?= $idx ?>" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="<?php echo $receive_detail['Amount_NonRe'] ?>">
                                                                                                                                                 </td>
                                                                                                                                                 
                                                                                                                                                 <td>
@@ -280,29 +280,30 @@ if (empty($_SESSION['Username'])) {
 
                                                                                                                         $("#Number_Product<?= $idx ?>").number(true, 0);
 
-                                                                                                                        $('#Number_Product<?= $idx ?>').change(function () {
-                                                                                                                            var amountOr = parseFloat($('#Amount_Product<?= $idx ?>').val());
-                                                                                                                            amountOr = isNaN(amountOr) ? 0 : amountOr;
-                                                                                                                            var nonere = parseFloat($('#No_Receive<?= $idx ?>').val());
-                                                                                                                            nonere = isNaN(nonere) ? 0 : nonere;
+                                                                                                                        // $('#Number_Product<?= $idx ?>').change(function () {
+                                                                                                                        //     var amountOr = parseFloat($('#Amount_Product<?= $idx ?>').val());
+                                                                                                                        //     amountOr = isNaN(amountOr) ? 0 : amountOr;
+                                                                                                                        //     var nonere = parseFloat($('#No_Receive<?= $idx ?>').val());
+                                                                                                                        //     nonere = isNaN(nonere) ? 0 : nonere;
 
-                                                                                                                            var amount_unit = parseFloat($('#Amount_Unit<?= $idx ?>').val());
-                                                                                                                            var amount = parseFloat($('#Number_Product<?= $idx ?>').val());
-                                                                                                                            var cost = parseFloat($('#Cost_Price<?= $idx ?>').val());
-                                                                                                                            var total = $('#Total_PriceHide<?= $idx ?>').val();
-                                                                                                                            total = total.replace(",", "");
-                                                                                                                            var total_banlance = parseFloat(total);
+                                                                                                                        //     var amount_unit = parseFloat($('#Amount_Unit<?= $idx ?>').val());
+                                                                                                                        //     var amount = parseFloat($('#Number_Product<?= $idx ?>').val());
+                                                                                                                        //     var cost = parseFloat($('#Cost_Price<?= $idx ?>').val());
+                                                                                                                        //     var total = $('#Total_PriceHide<?= $idx ?>').val();
+                                                                                                                        //     total = total.replace(",", "");
+                                                                                                                        //     var total_banlance = parseFloat(total);
 
-                                                                                                                            console.log(total_banlance);
-                                                                                                                            if (amount <= nonere) {
-                                                                                                                                $('#No_Receive<?= $idx ?>').val(nonere - amount);
-                                                                                                                                $('#Total_Price<?= $idx ?>').val((amount * amount_unit * cost) + total_banlance);
-                                                                                                                                $('#Total_Price<?= $idx ?>').number(true, 2);
-                                                                                                                            } else {
-                                                                                                                                alert("กรุณากรอกจำนวนที่รับน้อยกว่าหรือเท่ากับ " + nonere);
-                                                                                                                                $('#Number_Product<?= $idx ?>').val("");
-                                                                                                                            }
-                                                                                                                        });
+                                                                                                                        //     // console.log(total_banlance);
+                                                                                                                        //     if (amount <= nonere) {
+                                                                                                                        //         $('#No_Receive<?= $idx ?>').val(nonere - amount);
+                                                                                                                        //         $('#Total_Price<?= $idx ?>').val((amount * amount_unit * cost) + total_banlance);
+                                                                                                                        //         $('#Total_Price<?= $idx ?>').number(true, 2);
+                                                                                                                        //     } else {
+                                                                                                                        //         alert("กรุณากรอกจำนวนที่รับน้อยกว่าหรือเท่ากับ " + nonere);
+                                                                                                                        //         $('#Number_Product<?= $idx ?>').val("");
+                                                                                                                        //     }
+                                                                                                                        // }
+                                                                                                                        );
                                                                                                                     </script>
                                                                                                                         <?php
                                                                                                                     } else {
@@ -370,6 +371,7 @@ if (empty($_SESSION['Username'])) {
                                 <div>
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li Class = "active"><a href="./receive_receivedetail.php">จัดการข้อมูลการรับสินค้า</a></li>
+                                        <li ><a href="./checkproduct.php">ตรวจสอบข้อมูลสินค้า</a></li>
                                         <li role="presentation" class="dropdown" style="float: right;margin-right: -2px;">
                                             <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="min-width: 160px;">
                                                 <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ""; ?> <span class="caret"></span>
@@ -521,8 +523,8 @@ if (empty($_SESSION['Username'])) {
                                                 <th>จำนวนที่รับ</th>
                                                 <th>จำนวนค้างรับ</th>
                                                 <th>หน่วยนับ</th>
-                                                <th>หน่วยละ/บาท</th>
-                                                <th>ยอดชำระ/บาท</th>
+                                                <th>หน่วยละ(บาท)</th>
+                                                <th>ยอดรวม(บาท)</th>
                                             </tr> 
                                             <tbody id="tbodydetail"></tbody>
                                         </table>
@@ -663,7 +665,7 @@ if (empty($_SESSION['Username'])) {
                                                         $result = mysql_query($sql);
                                                         $row = mysql_fetch_assoc($result);
 //                                                        print_r($row);
-                                                        if ($row['Amount_NonRe'] > 0) {
+                                                        
                                                             ?> 
                                                         <tbody>
                                                         <?php
@@ -701,7 +703,7 @@ if (empty($_SESSION['Username'])) {
                                                                 if (strpos($ID_Emp, "E") !== false) {
                                                                     $rql = "SELECT r.ID_Receive, r.Date_Receive, c.ID_Company ,c.Name_Company, e.ID_Emp,e.FName_Emp, e.LName_Emp FROM receive r INNER JOIN company c ON c.ID_Company = r.ID_Company INNER JOIN employees e ON e.ID_Emp = r.ID_Emp WHERE e.ID_Emp='$ID_Emp' AND r.ID_Receive='$ID_Receive' ORDER BY r.ID_Receive ASC";
                                                                 } else if (strpos($ID_Emp, "AD") !== false) {
-                                                                    $rql = "SELECT r.ID_Receive, r.Date_Receive, c.ID_Company ,c.Name_Company, e.ID_Admin AS ID_Emp,e.Name_Admin AS FName_Emp, e.LName_Admin AS LName_Emp FROM receive r INNER JOIN company c ON c.ID_Company = r.ID_Company INNER JOIN admin e ON e.ID_Admin = r.ID_Emp WHERE e.ID_Admin='$ID_Emp' AND r.ID_Receive='$ID_Receive' ORDER BY r.ID_Receive ASC ";
+                                                                    // $rql = "SELECT r.ID_Receive, r.Date_Receive, c.ID_Company ,c.Name_Company, e.ID_Admin AS ID_Emp,e.Name_Admin AS FName_Emp, e.LName_Admin AS LName_Emp FROM receive r INNER JOIN company c ON c.ID_Company = r.ID_Company INNER JOIN admin e ON e.ID_Admin = r.ID_Emp WHERE e.ID_Admin='$ID_Emp' AND r.ID_Receive='$ID_Receive' ORDER BY r.ID_Receive ASC ";
                                                                 }
                                                                 $row_receive = mysql_fetch_assoc(mysql_query($rql));
                                                                 ?>
@@ -728,8 +730,8 @@ if (empty($_SESSION['Username'])) {
                                                                                             <th><span style="float:right;">จำนวนที่รับ</span></th>
                                                                                             <th><span style="float:right;">จำนวนค้างรับ</span></th>
                                                                                             <th>หน่วยนับ</th>
-                                                                                            <th><span style="float:right;">หน่วยละ/บาท</span></th>
-                                                                                            <th><span style="float:right;">ยอดชำระ/บาท</span></th>
+                                                                                            <th><span style="float:right;">หน่วยละ(บาท)</span></th>
+                                                                                            <th><span style="float:right;">ยอดรวม(บาท)</span></th>
                                                                                             <th>สถานะ</th>
                                                                                             </thead>
                                                                                             <tbody>
@@ -782,8 +784,8 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                 <th>จำนวนที่รับ</th>
                                                                                                                                                 
                                                                                                                                                 <th>หน่วยนับ</th>
-                                                                                                                                                <th>หน่วยละ/บาท</th>
-                                                                                                                                                <th>ยอดชำระ/บาท</th>
+                                                                                                                                                <th>หน่วยละ(บาท)</th>
+                                                                                                                                                <th>ยอดรวม(บาท)</th>
                                                                                                                                             </tr>
                                                                                                                                         </thead>
                                                                                                                                         <tbody>
@@ -805,6 +807,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                 </td>
                                                                                                                                                 <td>
                                                                                                                                                     <input type="text" style="text-align:right" name="Number_Product2" id="Number_Product<?= $idx ?>" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="<?php echo $row['Amount_NonRe'] ?>">
+                                                                                                                                                    <input type="hidden" style="text-align:right" name="Number_t2" id="Number_Product22<?= $idx ?>" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="<?php echo $row['Amount_NonRe'] ?>">
                                                                                                                                                 </td>
                                                                                                                                                 
                                                                                                                                                 <td>
@@ -858,10 +861,12 @@ if (empty($_SESSION['Username'])) {
                                                                                                                         $("#Number_Product<?= $idx ?>").number(true, 0);
 
                                                                                                                         $('#Number_Product<?= $idx ?>').change(function () {
+                                                                                                                            var nontest = parseFloat($('#Number_Product22<?= $idx ?>').val());
                                                                                                                             var amountOr = parseFloat($('#Amount_Product<?= $idx ?>').val());
                                                                                                                             amountOr = isNaN(amountOr) ? 0 : amountOr;
                                                                                                                             var nonere = parseFloat($('#No_Receive<?= $idx ?>').val());
                                                                                                                             nonere = isNaN(nonere) ? 0 : nonere;
+
 
                                                                                                                             var amount_unit = parseFloat($('#Amount_Unit<?= $idx ?>').val());
                                                                                                                             var amount = parseFloat($('#Number_Product<?= $idx ?>').val());
@@ -870,9 +875,9 @@ if (empty($_SESSION['Username'])) {
                                                                                                                             total = total.replace(",", "");
                                                                                                                             var total_banlance = parseFloat(total);
 
-                                                                                                                            console.log(total_banlance);
+                                                                                                                            console.log(nontest);
                                                                                                                             if (amount <= nonere) {
-                                                                                                                                $('#No_Receive<?= $idx ?>').val(nonere - amount);
+                                                                                                                                $('#No_Receive<?= $idx ?>').val(nontest - amount);
                                                                                                                                 $('#Total_Price<?= $idx ?>').val((amount * amount_unit * cost) + total_banlance);
                                                                                                                                 $('#Total_Price<?= $idx ?>').number(true, 2);
                                                                                                                             } else {
@@ -956,7 +961,7 @@ if (empty($_SESSION['Username'])) {
                                                         }
                                                         ?>
                                                         </tbody>
-                                                    <?php } ?>
+                                                    <?php  ?>
                                                 </table>
                                             </div>
                                         </div>

@@ -103,11 +103,12 @@ if (empty($_SESSION['Username'])) {
             ?>
                     <tr>
                         <td width="30%">
-                            รหัสผู้สั่ง <?php
-                                $num1 = 2;
-                                $num2 = 5; 
-                                $sum = $num1*$num2;
-                                echo $sum;
+                            รหัสผู้สั่ง 
+                            <?php
+                                // $num1 = 2;
+                                // $num2 = 5; 
+                                // $sum = $num1*$num2;
+                                // echo $sum;
                              ?>
                         </td>
                         <td>

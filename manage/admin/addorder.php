@@ -188,7 +188,7 @@ if (empty($_SESSION['Username'])) {
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')"; >พิมพ์ใบสั่งซื้อ</a>
+                                                                <a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $_GET['q'];?>')"; >พิมพ์ใบสั่งซื้อ</a>
                                                                 <div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
                                                             </div>
 
@@ -303,6 +303,13 @@ if (empty($_SESSION['Username'])) {
                                                                                 }
                                                                                 ?>
                                                                             </select>
+                                                                             <script>
+                                                                             //    $( "ID_Company" )
+                                                                             //      .change(function () {
+                                                                             //         alert( "Handler for .change() called." );
+                                                                             //      })
+                                                                             //      .change();
+                                                                             //    </script>
                                                                         </td>
                                                                     </tr> 
                                                                 </table>
@@ -330,7 +337,7 @@ if (empty($_SESSION['Username'])) {
                                                                                     <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
                                                                                     <select ng-change="selectProduct($index)" ng-model="ID_Product[$index]" name="ID_Product[]" id="ID_Product" class="idropdown" placeholder="ชื่อสินค้า" required="">
                                                                                         <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
-                                                                                        <option ng-repeat="data in product" value="{{data.ID_Product}}">{{data.Product_Name}}</option>
+                                                                                        <option ng-repeat="data in product" id"target"value="{{data.ID_Product}}">{{data.Product_Name}}</option>
                                                                                     </select> 
                                                                                 </td>
                                                                                 <td>
@@ -404,7 +411,9 @@ if (empty($_SESSION['Username'])) {
                                                                 </div> 
                                                             </div> 
                                                         </div>
+                                                       
                                                     </form> 
+                                                    
                                                 </div>  
                                             </div>
                                         </div>
@@ -577,7 +586,8 @@ if (empty($_SESSION['Username'])) {
                                                                                                     </tbody>
                                                                                                 </table>
                                                                                             </div>
-                                                                                        </div><a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')";>พิมพ์ใบสั่งซื้ื้อ</a><div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
+                                                                                        </div><a href="print_addorder.php" target="_blank" class="btn btn-primary" onClick="popWin('<?php echo $oid;?>')";>พิมพ์ใบสั่งซื้ื้อ</a>
+                                                                                        <div style="text-align: right;"><a href="./addorder.php" class="btn btn-default">ปิด</a></div>
                                                                                     </div> 
 
                                                                                 </td>

@@ -125,7 +125,7 @@ if (empty($_SESSION['Username'])) {
                       
                                             <?php if (!empty($_GET['q'])) { ?>
                                             <?php
-                                            $sql = "SELECT * FROM customers c inner join prefix p on c.ID_Prefix=p.ID_Prefix WHERE c.FName_Cus LIKE '" . $_GET['q'] . "' OR c.LName_Cus LIKE '" . $_GET['q'] . "' ";
+                                            $sql = "SELECT * FROM customers c inner join prefix p on c.ID_Prefix=p.ID_Prefix WHERE c.FName_Cus LIKE '%" . $_GET['q'] . "%' OR c.LName_Cus LIKE '%" . $_GET['q'] . "%' ";
                                             // $sql = "SELECT * FROM product p, count c, company cm WHERE p.ID_Product = '" . $_GET['q'] . "' AND p.ID_Count = c.ID_Count AND p.ID_Company=cm.ID_Company ";
                                             // $sql = "SELECT * FROM product p, count c, company cm WHERE  p.ID_Count = c.ID_Count AND p.ID_Company=cm.ID_Company p.ID_Product = '" . $_GET['q'] . "'";
                                             // $sql = "SELECT * FROM product WHERE ID_Product = '" . $_GET['q'] . "'";

@@ -340,10 +340,10 @@ if (!empty($_POST['Button'])) {
                                                                     <table>
                                                                         <tr>
                                                                             <td style="border: none;padding: 8px;width: 46%;">
-                                                                                <label>รหัสสินค้า</label>
+                                                                                <label>ข้อมูลสินค้า</label>
                                                                             </td>
                                                                             <td style="border: none;padding: 8px;width: 40%;">
-                                                                                <input name="q" id="q" type="text" placeholder="รหัสสินค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
+                                                                                <input name="q" id="q" type="text" placeholder="ข้อมูลสินค้า" style="background: #C0F9BD;width:100% " class="form-control point" value=""> 
                                                                             </td>
                                                                             <td style="border: none;padding: 8px;">
                                                                                 <input type="submit" class="btn btn-primary" value="ค้นหา">

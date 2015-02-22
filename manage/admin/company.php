@@ -77,16 +77,16 @@ if (!empty($_POST['Button'])) {
                                     ?>
                                     <form name="form1" method="post" action="">
                                         <center>
-                                            <label style="margin-left: -155px;padding-top: 5px;">รหัสบริษัทคู่ค้า*</label>
+                                            <label style="margin-left: -155px;padding-top: 5px;">รหัสบริษัทคู่ค้า</label>
                                             <br>
-                                            <input style="background: #C0F9BD;width: 70%;" type="text" class="form-control" name="ID_Company" id="ID_Company" required placeholder="รหัสบริษัทคู่ค้า" value="<?php echo $NewId; ?>" maxlength="5"> 
-                                            <label style="margin-left: -194px;padding-top: 5px;">ชื่อบริษัท</label>
+                                            <input readonly"" style="background: #C0F9BD;width: 70%;" type="text" class="form-control" name="ID_Company" id="ID_Company" required placeholder="รหัสบริษัทคู่ค้า" value="<?php echo $NewId; ?>" maxlength="5" > 
+                                            <label style="margin-left: -194px;padding-top: 5px;">ชื่อบริษัท</label><font color="red">*</font>
                                             <br>
                                             <input style="background: #C0F9BD;width: 70%;" type="text" class="form-control" name="Name_Company" id="Name_Company" required placeholder="ชื่อบริษัท" value="" > 
-                                            <label style="margin-left: -155px;padding-top: 5px;">เบอร์โทรศัพท์</label>
+                                            <label style="margin-left: -155px;padding-top: 5px;">เบอร์โทรศัพท์</label><font color="red">*</font>
                                             <br>
-                                            <input style="background: #C0F9BD;width: 70%;" type="tel" maxlength="10" class="form-control" name="Tel" id="Tel" required placeholder="เบอร์โทรศัพท์" value="" > 
-                                            <label style="margin-left: -222px;padding-top: 5px;">ที่อยู่</label>
+                                            <input style="background: #C0F9BD;width: 70%;" type="tel" maxlength="10" class="form-control" name="Tel" id="Tel" required placeholder="เบอร์โทรศัพท์" value="" onKeyUp="if(this.value*1!=this.value) this.value='' ;"> 
+                                            <label style="margin-left: -222px;padding-top: 5px;">ที่อยู่</label><font color="red">*</font>
                                             <br>
                                             <textarea style="background: #C0F9BD;width: 70%;" rows="3" cols="5" class="form-control" name="Address" id="Address" required placeholder="ที่อยู่" value="" > </textarea>
                                             <br> 
@@ -100,6 +100,15 @@ if (!empty($_POST['Button'])) {
                                         $('#cancle').click(function () {
                                             $('#add').show();
                                         });
+
+                                        function checkNull(){  //ชื่อ function ตั้งได้ตามความสดวกของเราได้เลยครับ
+                                          var forms=document.form1;  //ผมสร้างตัวแปรมาเพื่ออ้างถึง form ครับ
+                                          if(forms1.ID_Company.value == "" || forms.Name_Company.value == "" || forms.Tel.value == "" || forms.Address.value == ""){ //เช็ค if ใน textfile ที่กำหนด ตรง .value == "" คือถ้าเป็นค่า null ก็ให้ทำงานภายใน if นี้.
+                                             alert('กรุณาเติมข้อมูลให้ครบ');  //สั่งให้ขึ้นข้อความที่ต้องการ
+                                             forms.textfile1.focus();  //เพิ่มความฉลาดให้โปรแกรมโดยการให้ cursor วิ่งไปในช่องที่ว่างอยู่  
+                                             return false;  //return false เป็นการไม่ให้โปรแกรมหรือหน้าเว็บเราทำงานต่อ
+                                          }
+}
 
                                         // check ซ้ำ
                                         var result = false;
