@@ -240,7 +240,7 @@ if (empty($_SESSION['Username'])) {
                                             </div> 
                                             <div class="input-group"style="width:60%;">
                                                 <label>เบอร์โทรศัพท์</label> <font color="red">*</font>
-                                                <input type="tel" name="Tel_Cus" id="Tel_Cus" required placeholder="เบอร์โทรศัพท์" maxlength="10" style="background: #C0F9BD" class="form-control"> 
+                                                <input type="tel" name="Tel_Cus" id="Tel_Cus" required placeholder="เบอร์โทรศัพท์" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="10" style="background: #C0F9BD" class="form-control"> 
                                             </div> 
                                             <div class="input-group"style="width:60%;">
                                                 <label>E-mail</label> <font color="red">*</font>

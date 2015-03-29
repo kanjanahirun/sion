@@ -89,9 +89,9 @@ if (!empty($_POST['Button'])) {
                                         <br>
                                         <input type="text" class="form-control" name="Name_Count" id="Name_Count" required placeholder="ชื่อหน่วยนับ" value="" style="background: #C0F9BD"> 
                                         <br>
-                                        จำนวน/หน่วย <font color="red">*</font>
+                                        <!-- จำนวน/หน่วย <font color="red">*</font> -->
                                         <br>
-                                        <input type="text" class="form-control" name="Amount_Unit" id="Amount_Unit" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required placeholder="จำนวน/หน่วย" value="" style="background: #C0F9BD"> 
+                                        <input type="hidden" class="form-control" name="Amount_Unit" id="Amount_Unit" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required placeholder="จำนวน/หน่วย" value="1" style="background: #C0F9BD"> 
                                         <br>
 
                                         <input onclick="return checkUnitCount();" id="add" type="submit" class="btn btn-primary" name="Button" value="เพิ่มข้อมูล">
@@ -158,7 +158,7 @@ if (!empty($_POST['Button'])) {
                                                         <tr>
                                                             <th>รหัสหน่วยนับ</th>
                                                             <th>ชื่อหน่วยนับ</th>
-                                                            <th>จำนวน/หน่วย</th>
+                                                            <!-- <th>จำนวน/หน่วย</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -170,7 +170,11 @@ if (!empty($_POST['Button'])) {
                                                                     </a>
                                                                 </td>
                                                                 <td><?php echo $row_prefix['Name_Count']; ?></td>
-                                                                <td><?php echo $row_prefix['Amount_Unit']; ?></td>
+                                                                <!-- <td> -->
+                                                                    <?php 
+                                                                // echo $row_prefix['Amount_Unit']; 
+                                                                ?>
+                                                            <!-- </td> -->
                                                             </tr>
                                                         <script type="text/javascript">
                                                             $("#<?= $row_prefix['ID_Count'] ?>").click(function () {

@@ -36,7 +36,7 @@ app.factory("numrows", function () {
     return numrows;
 });
 
-app.controller("addorderController", function ($scope) {
+app.controller("addorderController", function ($scope,$http) {
 
     $scope.orders = [];
 //    $scope.numrows = numrows;
@@ -50,6 +50,8 @@ app.controller("addorderController", function ($scope) {
     $scope.Total_Price = [];
     $scope.ID_Count = [];
     $scope.end = 1000;
+    $scope.idc = [];
+    $scope.idn = [];
 
 //    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
@@ -190,18 +192,32 @@ app.controller("addorderController", function ($scope) {
 
     $scope.selectProduct = function (index) {
         var ID_Product = $scope.ID_Product[index];
-        console.log(ID_Product);
+        //console.log(ID_Product);
+
+
         if (ID_Product != undefined && ID_Product != "") {
             var json = {'productId': ID_Product};
-            console.log(json)
+            //console.log(json)
             $.post("../admin/addorder.controller.php", json).done(function (data) {
                 var product = JSON.parse(data);
-                console.log(product);
+                //console.log(product);
                 $scope.$apply(function () {
                     $scope.Cost_Price[index] = product.Cost_Price;
                     $scope.Cost_Price_Product[index] = product.Cost_Price;
+                    $scope.idc[index] = product.ID_Count;
+                    $scope.idn[index] = product.Name_Count;
+                    var er = $scope.idc[index];
+                    var en = $scope.idn[index];
+                    console.log(er);
+                    console.log(en);
                 });
             });
+
+            // $.get('../admin/unit.php?id='+ID_Product, function(data, status){
+            //      $scope.unit = data;
+            // });
+
+
         } else {
             $scope.Cost_Price[index] = 0;
             $scope.Amount_Product[index] = 0;

@@ -16,7 +16,7 @@ if (!empty($_POST['Button'])) {
     $button = $_POST['Button'];
     //$Flag = true;
     if ($button == 'เพิ่มข้อมูล') {
-        $sql = "INSERT INTO product (ID_Product, Product_Name, Amount_Product, ID_Count, Cost_Price, Sale_Price, Point_Purchase,ID_Company) VALUES ('" . $_POST["ID_Product"] . "', '" . $_POST["Product_Name"] . "', '" . $_POST["Amount_Product"] . "', 'C001', '" . $_POST["Cost_Price"] . "', '" . $_POST["Sale_Price"] . "', '" . $_POST["Point_Purchase"] . "','".$_POST["ID_Company"]."')";
+        $sql = "INSERT INTO product (ID_Product, Product_Name, Amount_Product, ID_Count, Cost_Price, Sale_Price, Point_Purchase,ID_Company) VALUES ('" . $_POST["ID_Product"] . "', '" . $_POST["Product_Name"] . "', '" . $_POST["Amount_Product"] . "', '" . $_POST["tt"] . "', '" . $_POST["Cost_Price"] . "', '" . $_POST["Sale_Price"] . "', '" . $_POST["Point_Purchase"] . "','".$_POST["ID_Company"]."')";
         $Flag = mysql_query($sql);
 
         if ($Flag) {
@@ -26,7 +26,7 @@ if (!empty($_POST['Button'])) {
         }
     } elseif ($button == 'แก้ไขข้อมูล') {
         //$sql = "UPDATE Employees SET ID_Prefix, FName_Emp, LName_Emp, Tel_Emp, Salary, ID_TypeEmp, personal_ID = '".$_POST["ID_Prefix"]."', '".$_POST["FName_Emp"]."', '".$_POST["LName_Emp"]."', '".$_POST["Tel_Emp"]."', '".$_POST["Salary"]."', '".$_POST["ID_TypeEmp"]."', '".$_POST["personal_ID"]."'";
-        $sql = "UPDATE product SET ID_Product = '" . $_POST["ID_Product"] . "',Product_Name = '" . $_POST["Product_Name"] . "',Amount_Product = '" . $_POST["Amount_Product"] . "',ID_Count = 'C001',Cost_Price = '" . $_POST["Cost_Price"] . "',Sale_Price = '" . $_POST["Sale_Price"] . "',Point_Purchase = '" . $_POST["Point_Purchase"] . "',ID_Company='".$_POST["ID_Company"]."' WHERE ID_Product = '" . $_POST["ID_Product"] . "'";
+        $sql = "UPDATE product SET ID_Product = '" . $_POST["ID_Product"] . "',Product_Name = '" . $_POST["Product_Name"] . "',Amount_Product = '" . $_POST["Amount_Product"] . "',ID_Count = '" . $_POST["tt"] . "',Cost_Price = '" . $_POST["Cost_Price"] . "',Sale_Price = '" . $_POST["Sale_Price"] . "',Point_Purchase = '" . $_POST["Point_Purchase"] . "',ID_Company='".$_POST["ID_Company"]."' WHERE ID_Product = '" . $_POST["ID_Product"] . "'";
         $Flag = mysql_query($sql);
         if ($Flag) {
             echo alert('แก้ไขข้อมูลสำเร็จ');
@@ -189,8 +189,22 @@ if (!empty($_POST['Button'])) {
                                         </div>
                                         <div class="input-group"style="width:60%;">
                                             <label>หน่วยนับ</label> <font color="red">*</font>
+                                            <select style="width: 82%;" name="tt" id="tt" class="idropdown" placeholder="หน่วยนับ" required="">
+                                                <option value="" style="background: #C0F9BD">หน่วยนับ</option>
+                                                <?php
+                                                $sql = "SELECT * FROM count ORDER BY ID_Count ASC";
+                                                $query = mysql_query($sql);
+                                                while ($objResult = mysql_fetch_assoc($query)) {
+                                                    ?>
+                                                    <option value="<?= $objResult["ID_Count"]; ?>" style="background: #C0F9BD">
+                                                        <?= $objResult["Name_Count"]; ?>
+                                                    </option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select> 
 
-                                            <input type="text" name="tt" id="tt" required placeholder="ชิ้น" value="ชิ้น" maxlength="10" style="background: #C0F9BD" class="form-control" readonly> 
+                                            <!-- <input type="text" name="tt" id="tt" required placeholder="ชิ้น" value="ชิ้น" maxlength="10" style="background: #C0F9BD" class="form-control" readonly>  -->
                                         </div> 
                                     </div> 
                                     <div class="col-lg-6">
@@ -218,7 +232,7 @@ if (!empty($_POST['Button'])) {
                                         <div class="input-group"style="width:60%;">
                                             <label>บริษัท</label>  <font color="red">*</font>
                                             <br>
-                                            <select style="width: 82%;" name="ID_Company" id="ID_Company" class="idropdown" placeholder="หน่วยนับ" required="">
+                                            <select style="width: 82%;" name="ID_Company" id="ID_Company" class="idropdown" placeholder="" required="">
                                                 <option value="" style="background: #C0F9BD">เลือกบริษัท</option>
                                                 <?php
                                                 $sql = "SELECT * FROM company ORDER BY ID_Company ASC";
@@ -357,6 +371,7 @@ if (!empty($_POST['Button'])) {
                                                 <!-- <input type="text" name="q" value=""> -->
                                                 
                                             </form>
+                                            
 
                         <div class="row">
                             <div class="col-md-12">
@@ -400,7 +415,7 @@ if (!empty($_POST['Button'])) {
                                                             ID_Product.value = "<?= $row_product['ID_Product'] ?>";
                                                             Product_Name.value = "<?= $row_product['Product_Name'] ?>";
                                                             Amount_Product.value = "<?= $row_product['Amount_Product'] ?>";
-                                                            $('#ID_Count option[value="<?= $row_product['ID_Count'] ?>"]').attr('selected', 'selected');
+                                                            $('#tt option[value="<?= $row_product['ID_Count'] ?>"]').attr('selected', 'selected');
                                                             $('#ID_Company option[value="<?= $row_product['ID_Company'] ?>"]').attr('selected', 'selected');
                                                             document.getElementById("Cost_Price").value = "<?= $row_product['Cost_Price'] ?>";
                                                             $('#Sale_Price').val("<?= $row_product['Sale_Price'] ?>");

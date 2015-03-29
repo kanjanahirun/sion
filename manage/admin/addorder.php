@@ -289,7 +289,7 @@ if (empty($_SESSION['Username'])) {
                                                                             <label>ชื่อบริษัท</label>
                                                                         </td>
                                                                         <td style="border: none;">
-                                                                            <select ng-model="ID_Company" ng-init="ID_Company = init('')" ng-change="selectCompany(ID_Company)" name="ID_Company"  style="width: 50%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
+                                                                            <select ng-model="ID_Company" ng-init="ID_Company = init('')" ng-change="selectCompany(ID_Company)" id="sID_Company"  style="width: 50%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
                                                                                 <option value="" style="background: #C0F9BD">เลือกบริษัท</option> 
                                                                                 <?php
                                                                                 $sql = "SELECT * FROM company ORDER BY ID_Company ASC";
@@ -303,21 +303,20 @@ if (empty($_SESSION['Username'])) {
                                                                                 }
                                                                                 ?>
                                                                             </select>
-                                                                             <script>
-                                                                             //    $( "ID_Company" )
-                                                                             //      .change(function () {
-                                                                             //         alert( "Handler for .change() called." );
-                                                                             //      })
-                                                                             //      .change();
-                                                                             //    </script>
+                                                                            <script>
+                                                                                $( "#ssID_Company" ).change(function () {
+                                                                                     location.reload();
+                                                                                  })
+                                                                                </script>
+                                                                              
                                                                         </td>
                                                                     </tr> 
                                                                 </table>
                                                                 <div class="mygrid-wrapper-div" style="height: auto;">
-                                                                    <table class="table table-add">
+                                                                    <table id="tab" class="table table-add">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th>#</th> 
+                                                                                <th style="width:5%">#</th> 
                                                                                 <th style="width: 22%;">ชื่อสินค้า</th>
                                                                                 <th style="width: 5%;">จำนวน</th>
                                                                                 <th style="width: 15%;">หน่วยนับ</th>
@@ -328,7 +327,7 @@ if (empty($_SESSION['Username'])) {
                                                                         </thead>
                                                                         <tbody>    
                                                                             <tr ng-repeat="row in range(0, numrows - 1)" id="ng{{$index}}" ng-if="input[$index] != -1">
-                                                                                <td> 
+                                                                                <td style="vertical-align: middle"> 
                                                                                     <input type="hidden" ng-model="end">
                                                                                     <input type="hidden" ng-model="index[$index]" ng-init="index[$index] = $index + 1">
                                                                                     {{index[$index]}}
@@ -337,7 +336,7 @@ if (empty($_SESSION['Username'])) {
                                                                                     <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
                                                                                     <select ng-change="selectProduct($index)" ng-model="ID_Product[$index]" name="ID_Product[]" id="ID_Product" class="idropdown" placeholder="ชื่อสินค้า" required="">
                                                                                         <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
-                                                                                        <option ng-repeat="data in product" id"target"value="{{data.ID_Product}}">{{data.Product_Name}}</option>
+                                                                                        <option ng-repeat="data in product" value="{{data.ID_Product}}">{{data.Product_Name}}</option>
                                                                                     </select> 
                                                                                 </td>
                                                                                 <td>
@@ -345,27 +344,17 @@ if (empty($_SESSION['Username'])) {
                                                                                     <script>$('.Amount_Product').number(true, 0);</script>
                                                                                 </td> 
                                                                                 <td>
-                                                                                    <select ng-change="selectCount($index)" ng-model="ID_Count[$index]" ng-init="ID_Count[$index] = init('')" name="ID_Count[]" id="ID_Count" class="idropdown" required="">
-                                                                                        <option value="" style="background: #C0F9BD">เลือกหน่วยนับ</option>
-                                                                                        <?php
-                                                                                        $sql = "SELECT * FROM `count` ORDER BY ID_Count ASC";
-                                                                                        $query = mysql_query($sql);
-                                                                                        while ($objResult = mysql_fetch_array($query)) {
-                                                                                            ?>
-                                                                                            <option value="<?= $objResult["ID_Count"]; ?>" style="background: #C0F9BD">
-                                                                                                <?= $objResult["Name_Count"]; ?>
-                                                                                            </option>
-                                                                                            <?php
-                                                                                        }
-                                                                                        ?>
-                                                                                    </select>
+                                                                                    <input type="hidden" ng-model="idc[$index]" readonly  class="form-control" name="ID_Count[]">
+                                                                                    <input type="text" ng-model="idn[$index]" readonly  placeholder="หน่วยนับ" class="form-control">
+                                                                                    
+                                                                                    
                                                                                 </td>
                                                                                 <td style="width:17%">
                                                                                     <input ng-model="Cost_Price[$index]" ng-int="Cost_Price[$index]=init('')" value="{{Cost_Price[$index]}}" type="text" name="Cost_Price[]" placeholder="ราคา/หน่วย" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control Cost_Price" required="">
                                                                                     <input ng-model="Cost_Price_Product[$index]" ng-int="Cost_Price_Product[$index]=init('')" value="{{Cost_Price_Product[$index]}}" type="hidden" name="Cost_Price_Product" id="Cost_Price_Product" style="text-align:right;">
                                                                                     <script>$('.Cost_Price').number(true, 2);</script>
                                                                                 </td>
-                                                                                <td>
+                                                                                <td style="width:16%">
                                                                                     <input ng-model="Total_Price[$index]" ng-int="Total_Price[$index]=init('')" value="{{Total_Price[$index]}}" type="text" name="Total_Price[]" placeholder="ราคารวม" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control Total_Price" required="">
                                                                                     <script>$('.Total_Price').number(true, 2);</script>
                                                                                 </td>  
@@ -619,10 +608,10 @@ if (empty($_SESSION['Username'])) {
                                                                                                         <div class="mygrid-wrapper-div">
                                                                                                             <table class="table">
                                                                                                                 <thead>
-                                                                                                                <th>รหัสรายละเอียดการสั่งสินค้า</th> 
-                                                                                                                <th>ชื่อสินค้า</th>
+                                                                                                                <th style="width:22%">รหัสรายละเอียดการสั่งสินค้า</th> 
+                                                                                                                <th style="width:22%">ชื่อสินค้า</th>
                                                                                                                 <th style="width: 11%;"><span style="float: right;">จำนวนสินค้า</span></th>
-                                                                                                                <th>หน่วยนับ</th>
+                                                                                                                <!-- <th>หน่วยนับ</th> -->
                                                                                                                 <th style="width: 16%;"><span style="float: right;">ราคาต่อหน่วย(บาท)</span></th>
                                                                                                                 <th style="width: 13%;"><span style="float: right;">ราคารวม(บาท)</span></th> 
                                                                                                                 </thead>
@@ -713,18 +702,25 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                     alert("กรุณาเลือกสินค้าก่อน");
                                                                                                                                                 }
                                                                                                                                             });
+                                                                                                                                            
+                                                                                                                                            $("#ID_Product").change(function()
+                                                                                                                                            {
+                                                                                                                                                $("#Count_Product<?= $index ?>").val(product.ID_Count);
+                                                                                                                                            });
 
                                                                                                                                             $("#UPID_Product<?= $index ?>").change(function () {
                                                                                                                                                 var ID_Product = $("#UPID_Product<?= $index ?>").val();
-                                                                                                                                                console.log(ID_Product);
+                                                                                                                                                //console.log(ID_Product);
                                                                                                                                                 if (ID_Product != undefined && ID_Product != "") {
                                                                                                                                                     var json = {'productId': ID_Product};
                                                                                                                                                     console.log(json)
                                                                                                                                                     $.post("../admin/addorder.controller.php", json).done(function (data) {
                                                                                                                                                         var product = JSON.parse(data);
-                                                                                                                                                        console.log(product);
+                                                                                                                                                        //console.log(product);
+                                                                                                                                                        $("#Count_Product<?= $index ?>").val(product.ID_Count);
                                                                                                                                                         $("#Cost_Price_Product<?= $index ?>").val(product.Cost_Price);
                                                                                                                                                         $("#UPCost_Price<?= $index ?>").val(product.Cost_Price);
+                                                                                                                                                        
                                                                                                                                                     });
                                                                                                                                                 } else {
                                                                                                                                                     $("#UPCost_Price<?= $index ?>").val(0);
