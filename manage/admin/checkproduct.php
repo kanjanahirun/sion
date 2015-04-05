@@ -160,7 +160,7 @@ if (empty($_SESSION['Username'])) {
                                                         <div id="smallResult" class="zoom-anim-dialog mfp-hide dialog open" style="margin-top: 226px;height: auto;"> 
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading"><h4>ข้อมูลสินค้า</h4></div>
-                                                                <div class="mygrid-wrapper-div"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <div class="mygrid-wrapper-div">
                                                                     <table class="table" style="height: 100%;"> 
                                                                         <thead>
                                                                             <th>รหัสสินค้า</th>
@@ -191,7 +191,7 @@ if (empty($_SESSION['Username'])) {
                                                                 </table>
                                                             </div>
                                                         </div>
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                        
                                                         <div style="text-align: right;"><a href="./receive_receivedetail.php" class="btn btn-default">ปิด</a></div>
                                                     </div>
 

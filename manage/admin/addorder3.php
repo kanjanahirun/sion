@@ -13,7 +13,9 @@ if (empty($_SESSION['Username'])) {
     if (!empty($_POST['Button'])) {
         $button = $_POST['Button'];
         if ($button == 'ยืนยัน') {
-            
+            $ert = $_POST['ID_Order'];
+            echo "<script type='text/javascript'> console.log('ID_Order');console.log($ert);</script>";
+
             $strCount = "SELECT * FROM orders ORDER BY ID_Order DESC LIMIT 1";
             $objQueryCount = mysql_query($strCount);
             $Count_prefix = mysql_fetch_array($objQueryCount);
@@ -35,7 +37,6 @@ if (empty($_SESSION['Username'])) {
                 $Total_Price = $_POST['Total_Price'];
 
                 $result = mysql_query($sql);
-                console.log($result);
                 if ($result == 1) {
                     for ($i = 0; $i < count($ID_Orderdetail); $i++) {
                         $sql = "INSERT INTO order_detail (`ID_Orderdetail`, `ID_Order`, `ID_Product`, `Amount_Product`, `Total_Price`,`ID_Count`) VALUES ('" . $ID_Orderdetail[$i] . "', '" . $_POST["ID_Order"] . "', '" . $ID_Product[$i] . "', '" . $Amount_Product[$i] . "', '" . $Total_Price[$i] . "','" . $ID_Count[$i] . "')";
@@ -603,7 +604,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                 <form action="./addorder.php" method="post">
                                                                                                     <div class="panel panel-default" > 
 
-                                                                                                        <div class="panel-heading"><h4>แก้ไขข้อมูลการสั่งสินค้า รหัส : <span style="color: #3399FF;"><?= $orderx[$i]['ID_Order'] ?></span>  บริษัท : <span style="color: #3399FF;"><?= $orderx[$i]['Name_Company'] ?></span></h4></div>
+                                                                                                        <div class="panel-heading"><h4>แก้ไขข้อมูลการสั่งสินค้า รหัส : <span style="color: #3399FF;"><?= $orderx[$i]['ID_Order'] ?></span></h4></div>
 
                                                                                                         <input type="hidden" name="update[ID_Order]" value="<?= $orderx[$i]['ID_Order'] ?>">
                                                                                                         <div class="mygrid-wrapper-div">
@@ -612,151 +613,62 @@ if (empty($_SESSION['Username'])) {
                                                                                                                 <th style="width:22%">รหัสรายละเอียดการสั่งสินค้า</th> 
                                                                                                                 <th style="width:22%">ชื่อสินค้า</th>
                                                                                                                 <th style="width: 11%;"><span style="float: right;">จำนวนสินค้า</span></th>
-                                                                                                                <th>หน่วยนับ</th>
+                                                                                                                <!-- <th>หน่วยนับ</th> -->
                                                                                                                 <th style="width: 16%;"><span style="float: right;">ราคาต่อหน่วย(บาท)</span></th>
                                                                                                                 <th style="width: 13%;"><span style="float: right;">ราคารวม(บาท)</span></th> 
                                                                                                                 </thead>
-                                                                                                                <tbody>
-                                                                                                                    <?php
-                                                                                                                    $result = mysql_query($sql);
-                                                                                                                    $index = 0;
-                                                                                                                    $size = 0;
-                                                                                                                    while ($orderDetaile = mysql_fetch_array($result)) {
-                                                                                                                        $index = $orderDetaile['ID_Orderdetail'];
-                                                                                                                        $size++;
-                                                                                                                        ?>
-                                                                                                                        <tr>
-                                                                                                                            <td>
-                                                                                                                                <?php echo $orderDetaile['ID_Orderdetail']; ?>        
-                                                                                                                                <input type="hidden" name="UPID_Orderdetail<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['ID_Orderdetail'] ?>">
-                                                                                                                            </td>        
-                                                                                                                            <td>       
-                                                                                                                                <?php
-                                                                                                                                $sql = 'select * from product where ID_Company="' . $orderDetaile['ID_Company'] . '" order by Product_Name asc';
-                                                                                                                                $rs = mysql_query($sql);
-                                                                                                                                ?>
-                                                                                                                                <select  name="UPID_Product<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Product<?= $index ?>" class="idropdown" required="" ng-change="selectProduct($index)" ng-model="ID_Product[$index]">
-                                                                                                                                    <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
-                                                                                                                                    <?php
-                                                                                                                                    while ($row = mysql_fetch_assoc($rs)) {
-                                                                                                                                        if ($row['ID_Product'] == $orderDetaile['ID_Product']) {
-                                                                                                                                            echo '<option value="' . $row['ID_Product'] . '" selected="">' . $row['Product_Name'] . '</option>';
-                                                                                                                                        } else {
-                                                                                                                                            echo '<option value="' . $row['ID_Product'] . '">' . $row['Product_Name'] . '</option>';
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                    ?>
-                                                                                                                                </select>
-                                                                                                                            </td>  
-                                                                                                                            <td>
-                                                                                                                                <span style="float: right;">
-                                                                                                                                    <input type="text" name="UPAmount<?= $orderx[$i]['ID_Order'] ?>[]" id="UPAmount<?= $index ?>" class="form-control" style="background: #C0F9BD;text-align:right" value="<?= $orderDetaile['ODAmount_Product'] ?>"> 
-                                                                                                                                </span>
-                                                                                                                            </td>  
-                                                                                                                            <td>
-                                                                                                                                <input type="hidden" ng-model="idc[$index]"  readonly class="form-control" name="UPID_Count<?= $orderx[$i]['ID_Order'] ?>[]" id="UPID_Count<?= $index ?>">
-                                                                                                                                <input type="text" ng-model="idn[$index]"  readonly placeholder="หน่วยนับ" class="form-control">
-                                                                                                                                
-                                                                                                                            </td>
-                                                                                                                            <td>
-                                                                                                                                <input type="hidden" id="Cost_Price_Product<?= $index ?>" value="">
-                                                                                                                                <input name="UPCost_Price<?= $orderx[$i]['ID_Order'] ?>[]" value="<?= $orderDetaile['Cost_Price'] ?>" id="UPCost_Price<?= $index ?>" type="text" placeholder="ราคา/หน่วย" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control" required="">
-                                                                                                                            </td>
-                                                                                                                            <td>
-                                                                                                                                <input readonly="" type="text" name="UPTotal_Price<?= $orderx[$i]['ID_Order'] ?>[]" class="form-control" id="UPTotal_Price<?= $index ?>" value="<?= $orderDetaile['Total_Price'] ?>" style="background: #C0F9BD;text-align:right">
-                                                                                                                            </td> 
-                                                                                                                            <td> 
-                                                                                                                                <script type="text/javascript">
-                                                                                                                                            $("#UPAmount<?= $index ?>").number(true, 0);
-                                                                                                                                            $("#UPCost_Price<?= $index ?>").number(true, 2);
-                                                                                                                                            $("#UPTotal_Price<?= $index ?>").number(true, 2);
-                                                                                                                                            $("#UPAmount<?= $index ?>").change(function () {
-                                                                                                                                                var productId = $("#UPID_Product<?= $index ?>").val();
-                                                                                                                                                var amount = parseFloat($("#UPAmount<?= $index ?>").val());
-                                                                                                                                                amount = isNaN(amount) ? 0 : amount;
-                                                                                                                                                console.log(amount);
-                                                                                                                                                var cost = parseFloat($("#UPCost_Price<?= $index ?>").val());
-                                                                                                                                                cost = isNaN(cost) ? 0 : cost;
-                                                                                                                                                console.log(amount, cost);
+                                                                                                                <tbody>    
+                                                                            <tr ng-repeat="row in range(0, numrows - 1)" id="ng{{$index}}" ng-if="input[$index] != -1">
+                                                                                <td style="vertical-align: middle"> 
+                                                                                    <input type="hidden" ng-model="end">
+                                                                                    <input type="hidden" ng-model="index[$index]" ng-init="index[$index] = $index + 1">
+                                                                                    <!-- {{index[$index]}} -->
+                                                                                </td> 
+                                                                                <td>                                            
+                                                                                    <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
+                                                                                    <select ng-change="selectProduct($index)" ng-model="ID_Product[$index]" name="ID_Product[]" id="ID_Product" class="idropdown" placeholder="ชื่อสินค้า" required="">
+                                                                                        <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
+                                                                                        <option ng-repeat="data in product" value="{{data.ID_Product}}">{{data.Product_Name}}</option>
+                                                                                    </select> 
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input ng-model="Amount_Product[$index]" ng-change="pressAmount(Amount_Product, $index)" ng-int="orders.Amount_Product[$index]=init('')" type="text" name="Amount_Product[]"  placeholder="จำนวนสินค้า" maxlength="10" style="background: #C0F9BD;text-align:right;" class="form-control Amount_Product" required="">
+                                                                                    <script>$('.Amount_Product').number(true, 0);</script>
+                                                                                </td> 
+                                                                                <td>
+                                                                                    <input type="hidden" ng-model="idc[$index]" readonly  class="form-control" name="ID_Count[]">
+                                                                                    <input type="text" ng-model="idn[$index]" readonly  placeholder="หน่วยนับ" class="form-control">
+                                                                                    
+                                                                                    
+                                                                                </td>
+                                                                                <td style="width:17%">
+                                                                                    <input ng-model="Cost_Price[$index]" ng-int="Cost_Price[$index]=init('')" value="{{Cost_Price[$index]}}" type="text" name="Cost_Price[]" placeholder="ราคา/หน่วย" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control Cost_Price" required="">
+                                                                                    <input ng-model="Cost_Price_Product[$index]" ng-int="Cost_Price_Product[$index]=init('')" value="{{Cost_Price_Product[$index]}}" type="hidden" name="Cost_Price_Product" id="Cost_Price_Product" style="text-align:right;">
+                                                                                    <script>$('.Cost_Price').number(true, 2);</script>
+                                                                                </td>
+                                                                                <td style="width:16%">
+                                                                                    <input ng-model="Total_Price[$index]" ng-int="Total_Price[$index]=init('')" value="{{Total_Price[$index]}}" type="text" name="Total_Price[]" placeholder="ราคารวม" maxlength="20" style="background: #C0F9BD;text-align:right" class="form-control Total_Price" required="">
+                                                                                    <script>$('.Total_Price').number(true, 2);</script>
+                                                                                </td>  
+                                                                                <td style="width:17%">
+                                                                                    <div ng-if="$index >= 0 && $index == (row)" style="cursor: pointer;  margin-top: 8px;"> 
+                                                                                        <a ng-click="deleteRow($index, 1)" style="color: rgb(211, 39, 39);" title="ลบแถว"><i class="glyphicon glyphicon-remove"></i></a>
+                                                                                    </div>
+                                                                                </td> 
+                                                                            </tr> 
+                                                                            <tr align="center">
+                                                                                <td colspan="8"> 
+                                                                                    <a ng-click="numRows(numrows, 2)" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>เพิ่มข้อมูล</a>
 
-                                                                                                                                                if (cost != undefined && productId != "" && productId != undefined) {
-                                                                                                                                                    var total_price = cost * amount;
-                                                                                                                                                    console.log(total_price);
-                                                                                                                                                    $("#UPTotal_Price<?= $index ?>").val(total_price);
-                                                                                                                                                }
-
-                                                                                                                                                if (productId == "" || productId == undefined) {
-                                                                                                                                                    $("#UPAmount<?= $index ?>").val(<?= $orderDetaile['ODAmount_Product'] ?>);
-                                                                                                                                                    alert("กรุณาเลือกสินค้าก่อน");
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                            
-                                                                                                                                            $("#ID_Product").change(function()
-                                                                                                                                            {
-                                                                                                                                                $("#Count_Product<?= $index ?>").val(product.ID_Count);
-                                                                                                                                            });
-
-                                                                                                                                            $("#UPID_Product<?= $index ?>").change(function () {
-                                                                                                                                                var ID_Product = $("#UPID_Product<?= $index ?>").val();
-                                                                                                                                                //console.log(ID_Product);
-                                                                                                                                                if (ID_Product != undefined && ID_Product != "") {
-                                                                                                                                                    var json = {'productId': ID_Product};
-                                                                                                                                                    console.log(json)
-                                                                                                                                                    $.post("../admin/addorder.controller.php", json).done(function (data) {
-                                                                                                                                                        var product = JSON.parse(data);
-                                                                                                                                                        //console.log(product);
-                                                                                                                                                        $("#Count_Product<?= $index ?>").val(product.ID_Count);
-                                                                                                                                                        $("#Cost_Price_Product<?= $index ?>").val(product.Cost_Price);
-                                                                                                                                                        $("#UPCost_Price<?= $index ?>").val(product.Cost_Price);
-                                                                                                                                                        
-                                                                                                                                                    });
-                                                                                                                                                } else {
-                                                                                                                                                    $("#UPCost_Price<?= $index ?>").val(0);
-                                                                                                                                                    $("#UPAmount<?= $index ?>").val(0);
-                                                                                                                                                    $("#UPTotal_Price<?= $index ?>").val(0);
-                                                                                                                                                }
-                                                                                                                                            });
-
-                                                                                                                                            $("#UPID_Count<?= $index ?>").change(function () {
-                                                                                                                                                var cost = parseFloat($("#Cost_Price_Product<?= $index ?>").val());
-                                                                                                                                                cost = isNaN(cost) ? 0 : cost;
-                                                                                                                                                var amount = parseFloat($("#UPAmount<?= $index ?>").val());
-                                                                                                                                                amount = isNaN(amount) ? 0 : amount;
-
-
-                                                                                                                                                if (cost > 0 && amount > 0) {
-                                                                                                                                                    var ID_Count = $("#UPID_Count<?= $index ?>").val();
-                                                                                                                                                    if (ID_Count != "" && ID_Count != undefined) {
-                                                                                                                                                        var json = {'ID_Count': ID_Count};
-                                                                                                                                                        $.post("../admin/addorder.controller.php", json).done(function (data) {
-                                                                                                                                                            var unitCount = JSON.parse(data);
-                                                                                                                                                            var anmountUnit = parseFloat(unitCount.Amount_Unit);
-                                                                                                                                                            var total_price = cost * anmountUnit * amount;
-                                                                                                                                                            $("#UPCost_Price<?= $index ?>").val(cost * anmountUnit);
-                                                                                                                                                            $("#UPTotal_Price<?= $index ?>").val(total_price);
-
-                                                                                                                                                        });
-                                                                                                                                                    } else {
-                                                                                                                                                        alert("กรุณาเลือกหน่วยนับ");
-                                                                                                                                                    }
-                                                                                                                                                } else if ($("#UPID_Product<?= $index ?>").val() == "" || $("#UPID_Product<?= $index ?>").val() == undefined) {
-                                                                                                                                                    $('#UPID_Count<?= $index ?>').val("");
-                                                                                                                                                    $("#UPID_Count<?= $index ?> option[value='<?= $orderDetaile['ID_Count'] ?>']").attr("selected", "selected");
-                                                                                                                                                    alert("กรุณาเลือกสินค้าก่อน");
-                                                                                                                                                } else {
-                                                                                                                                                    $('#UPID_Count<?= $index ?>').val("");
-                                                                                                                                                    $("#UPID_Count<?= $index ?> option[value='<?= $orderDetaile['ID_Count'] ?>']").attr("selected", "selected");
-                                                                                                                                                    alert("กรุณากรอกจำนวนสินค้าก่อน");
-                                                                                                                                                }
-
-                                                                                                                                            });
-                                                                                                                                </script>
-                                                                                                                            </td> 
-                                                                                                                        </tr>
-                                                                                                                        <?php
-                                                                                                                    }
-                                                                                                                    ?>
-                                                                                                                </tbody>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr align="right">
+                                                                                <td colspan="8">
+                                                                                    <input id="add" type="submit" class="btn btn-primary" name="Button" value="ยืนยัน">
+                                                                                    <a href="./addorder.php" class="btn btn-default">ยกเลิก</a>  
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
                                                                                                             </table>
                                                                                                         </div> 
                                                                                                     </div> 
