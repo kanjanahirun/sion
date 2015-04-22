@@ -5,14 +5,15 @@ include("../connect/connect.php");
 
 if (empty($_SESSION['Username'])) {
     if (empty($_SESSION['Username']) || empty($_SESSION['status']) || empty($_SESSION['name'])) {
-        echo alert('กรุณาเข้าสู่ระบบ Admin ก่อน');
+        echo alert('กรุณาเข้าสู่ระบบก่อน');
         echo location("../login.php");
     }
 } else {
 
     if (!empty($_POST['Button'])) {
+
         $button = $_POST['Button'];
-        if ($button == 'ยืนยัน') {
+        if ($button == 'Confirm') {
             
             $strCount = "SELECT * FROM orders ORDER BY ID_Order DESC LIMIT 1";
             $objQueryCount = mysql_query($strCount);
@@ -22,9 +23,10 @@ if (empty($_SESSION['Username'])) {
             $Prefix_num = substr($Count_prefix["ID_Order"], 0, 3);
 
             $strEmp_ID = "" . ($Prefix_num . "" . $nextNum);
+            echo "<script>alert('".$_POST['ID_Company']."');</script>";
 
             if (!empty($_POST['ID_Order']) && !empty($_POST['Date_Order']) && !empty($_POST['ID_Emp']) && !empty($_POST['ID_Company']) && !empty($_POST['ID_Orderdetail']) && !empty($_POST['ID_Product']) && !empty($_POST['Amount_Product']) && !empty($_POST['ID_Count']) && !empty($_POST['Cost_Price']) && !empty($_POST['Total_Price'])) {
-
+                
                 $date = format_date($_POST["Date_Order"]);
                 $sql = "INSERT INTO orders VALUES ('" . $_POST["ID_Order"] . "', '" . $date . "', '" . $_SESSION['id'] . "', '" . $_POST["ID_Company"] . "')";
 
@@ -35,7 +37,8 @@ if (empty($_SESSION['Username'])) {
                 $Total_Price = $_POST['Total_Price'];
 
                 $result = mysql_query($sql);
-                console.log($result);
+               
+
                 if ($result == 1) {
                     for ($i = 0; $i < count($ID_Orderdetail); $i++) {
                         $sql = "INSERT INTO order_detail (`ID_Orderdetail`, `ID_Order`, `ID_Product`, `Amount_Product`, `Total_Price`,`ID_Count`) VALUES ('" . $ID_Orderdetail[$i] . "', '" . $_POST["ID_Order"] . "', '" . $ID_Product[$i] . "', '" . $Amount_Product[$i] . "', '" . $Total_Price[$i] . "','" . $ID_Count[$i] . "')";
@@ -45,6 +48,7 @@ if (empty($_SESSION['Username'])) {
                     echo "<script>location='./addorder.php';</script>";
                 }
             } else {
+                
                 echo "<script>alert('ไม่สามารถเพิ่มข้อมูลการสั่งซื้อสินค้าได้เนื่องจากข้อมูลไม่ถูกต้อง');</script>";
                 echo "<script>location='./addorder.php';</script>";
             }
@@ -54,6 +58,7 @@ if (empty($_SESSION['Username'])) {
     // UPDATE
 
     if (!empty($_POST['update'])) {
+        console.log("update");
         $ID_Order = $_POST['update']['ID_Order'];
 
         $PD = 'UPID_Orderdetail' . $ID_Order;
@@ -105,6 +110,7 @@ if (empty($_SESSION['Username'])) {
             <?php include("../fragments/libmanage.php"); ?>
             <script type="text/javascript" src="../assets/js/angular.min.js"></script>
             <script type="text/javascript" src="../assets/js/addorder.controller.js"></script>
+            <!-- <script type="text/javascript" src="../assets/js/jquery.js"></script> -->
         </head>
         <body id="bg" ng-controller="addorderController">
             <nav>
@@ -290,7 +296,7 @@ if (empty($_SESSION['Username'])) {
                                                                             <label>ชื่อบริษัท</label>
                                                                         </td>
                                                                         <td style="border: none;">
-                                                                            <select ng-model="ID_Company" ng-init="ID_Company = init('')" ng-change="selectCompany(ID_Company)" id="sID_Company"  style="width: 50%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
+                                                                            <select ng-model="ID_Company" ng-init="ID_Company = init('')" ng-change="selectCompany(ID_Company)" name="ID_Company"  style="width: 50%;" id="ID_Company" class="idropdown" placeholder="รหัสบริษัท" required="">
                                                                                 <option value="" style="background: #C0F9BD">เลือกบริษัท</option> 
                                                                                 <?php
                                                                                 $sql = "SELECT * FROM company ORDER BY ID_Company ASC";
@@ -335,6 +341,7 @@ if (empty($_SESSION['Username'])) {
                                                                                 </td> 
                                                                                 <td>                                            
                                                                                     <input type="hidden" name="ID_Orderdetail[]" id="" value="{{generateIDbyFix(ID_Orderdetail, 2, 'OD', $index)}}">
+
                                                                                     <select ng-change="selectProduct($index)" ng-model="ID_Product[$index]" name="ID_Product[]" id="ID_Product" class="idropdown" placeholder="ชื่อสินค้า" required="">
                                                                                         <option value="" style="background: #C0F9BD;">เลือกสินค้า</option>
                                                                                         <option ng-repeat="data in product" value="{{data.ID_Product}}">{{data.Product_Name}}</option>
@@ -373,7 +380,7 @@ if (empty($_SESSION['Username'])) {
                                                                             </tr>
                                                                             <tr align="right">
                                                                                 <td colspan="8">
-                                                                                    <input id="add" type="submit" class="btn btn-primary" name="Button" value="ยืนยัน">
+                                                                                    <input id="add" type="submit" class="btn btn-primary" name="Button" value="Confirm">
                                                                                     <a href="./addorder.php" class="btn btn-default">ยกเลิก</a>  
                                                                                 </td>
                                                                             </tr>

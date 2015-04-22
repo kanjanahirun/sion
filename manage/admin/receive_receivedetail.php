@@ -4,7 +4,7 @@ include("../connect/connect.php");
 
 if (empty($_SESSION['Username'])) {
     if (empty($_SESSION['Username']) || empty($_SESSION['status']) || empty($_SESSION['name'])) {
-        echo alert('กรุณาเข้าสู่ระบบ Admin ก่อน');
+        echo alert('กรุณาเข้าสู่ระบบก่อน');
         echo location("../login.php");
     }
 } else {
@@ -803,7 +803,7 @@ if (empty($_SESSION['Username'])) {
                                                                                                                                                     <input type="text" style="text-align:right" name="Amount_Product2" id="Amount_Product<?= $idx ?>" placeholder="จำนวนที่สั่ง" maxlength="10" class="form-control" required="" value="<?php echo $amount['Amount_Product']; ?>" readonly="">
                                                                                                                                                 </td>
                                                                                                                                                 <td>
-                                                                                                                                                    <input type="text" style="text-align:right" name="No_Receive2" id="No_Receive<?= $idx ?>" placeholder="จำนวนค้างรับ" maxlength="10" class="form-control" required="" value="<?php echo $row['Amount_NonRe'] ?>" readonly="">
+                                                                                                                                                    <input type="text" style="text-align:right" name="No_Receive2" id="No_Receive<?= $idx ?>" placeholder="จำนวนค้างรับ" maxlength="10" class="form-control" required="" value="0" readonly="">
                                                                                                                                                 </td>
                                                                                                                                                 <td>
                                                                                                                                                     <input type="text" style="text-align:right" name="Number_Product2" id="Number_Product<?= $idx ?>" placeholder="จำนวนที่รับ" maxlength="10" class="form-control" required="" value="<?php echo $row['Amount_NonRe'] ?>">
@@ -876,13 +876,15 @@ if (empty($_SESSION['Username'])) {
                                                                                                                             var total_banlance = parseFloat(total);
 
                                                                                                                             console.log(nontest);
-                                                                                                                            if (amount <= nonere) {
+                                                                                                                            if (amount <= nontest) {
                                                                                                                                 $('#No_Receive<?= $idx ?>').val(nontest - amount);
                                                                                                                                 $('#Total_Price<?= $idx ?>').val((amount * amount_unit * cost) + total_banlance);
                                                                                                                                 $('#Total_Price<?= $idx ?>').number(true, 2);
                                                                                                                             } else {
-                                                                                                                                alert("กรุณากรอกจำนวนที่รับน้อยกว่าหรือเท่ากับ " + nonere);
-                                                                                                                                $('#Number_Product<?= $idx ?>').val("");
+                                                                                                                                alert("กรุณากรอกจำนวนที่รับน้อยกว่าหรือเท่ากับ " + nontest);
+                                                                                                                                $('#Number_Product<?= $idx ?>').val(0);
+                                                                                                                                $('#No_Receive<?= $idx ?>').val(nontest);
+                                                                                                                                
                                                                                                                             }
                                                                                                                         });
                                                                                                                     </script>
